@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="rhapsody.social.activity_manager.default" class="Rhapsody\SocialBundle\Doctrine\ActivityManager">
+            <argument type="service" id="rhapsody.social.document_manager" />
+            <argument>%rhapsody_social.activity_class%</argument>
+        </service>
+
+        <!-- Do we need this? How can we streamline this? -->
+        <service id="rhapsody.social.document_manager" factory-service="doctrine_mongodb" factory-method="getManager" class="Doctrine\ODM\MongoDB\DocumentManager" public="false">
+            <argument>%rhapsody_social.activity_manager_name%</argument>
+        </service>
+
+      
+        <!-- Activity Templates ============================================ -->
+
+        <service id="rhapsody.social.twig.template.activity_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Document\Activity</argument>
+            <argument>RhapsodySocialBundle:Activity:activity.html.twig</argument>
+        </service>
+
+        <service id="rhapsody.social.twig.template.url_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Document\UrlContent</argument>
+            <argument>RhapsodySocialBundle:Activity:url_content.html.twig</argument>
+        </service>
+        
+        <service id="rhapsody.social.twig.template.image_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Document\ImageContent</argument>
+            <argument>RhapsodySocialBundle:Activity:image_content.html.twig</argument>
+        </service>
+    </services>
+
+</container>

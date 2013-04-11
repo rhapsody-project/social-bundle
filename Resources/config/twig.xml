@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <!-- Parameters -->
+    <parameters>
+        <parameter key="rhapsody.social.twig.activity_twig_template_manager">Rhapsody\SocialBundle\Twig\ActivityTwigTemplateManager</parameter>
+        <parameter key="rhapsody.social.twig.extension.rhapsody_social_extension.class">Rhapsody\SocialBundle\Twig\Extension\RhapsodySocialExtension</parameter>
+    </parameters>
+    
+    <!-- Services -->
+    <services>
+        <service id="rhapsody.social.twig.activity_twig_template_manager" class="%rhapsody.social.twig.activity_twig_template_manager%" public="true">
+            <argument type="service" id="twig" />
+        </service>
+
+        <service id="rhapsody.social.twig.extension.rhapsody_social_extension" class="%rhapsody.social.twig.extension.rhapsody_social_extension.class%" public="false">
+            <tag name="twig.extension"/>
+            <argument type="service" id="rhapsody.social.twig.activity_twig_template_manager" />
+        </service>
+    </services>
+
+</container>

@@ -27,6 +27,10 @@
 */
 namespace Rhapsody\SocialBundle\Twig\Extension;
 
+use Rhapsody\SocialBundle\Model\CommentInterface;
+
+use Rhapsody\SocialBundle\Model\ActivityContentInterface;
+
 use Rhapsody\SocialBundle\Model\ActivityInterface;
 use Rhapsody\SocialBundle\Twig\ActivityTwigTemplateManager;
 use Symfony\Bridge\Twig\TokenParser\FormThemeTokenParser;
@@ -48,11 +52,6 @@ class RhapsodySocialExtension extends \Twig_Extension
         $this->activityTemplateManager = $activityTemplateManager;
     }
 
-    public function doRenderSocialActivityWidget(ActivityInterface $activity)
-    {
-		return $this->activityTemplateManager->renderActivity($activity);
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -60,7 +59,9 @@ class RhapsodySocialExtension extends \Twig_Extension
     {
     	$functions = array();
 
-    	$functions['social_activity_widget'] = new \Twig_Function_Method($this, 'doRenderSocialActivityWidget', array('is_safe' => array('html')));
+    	$functions['activity_widget'] = new \Twig_Function_Method($this, 'renderActivityWidget', array('is_safe' => array('html')));
+    	$functions['activity_comment_widget'] = new \Twig_Function_Method($this, 'renderActivityCommentWidget', array('is_safe' => array('html')));
+    	$functions['activity_content_widget'] = new \Twig_Function_Method($this, 'renderActivityContentWidget', array('is_safe' => array('html')));
     	return $functions;
     }
 
@@ -70,5 +71,20 @@ class RhapsodySocialExtension extends \Twig_Extension
     public function getName()
     {
         return 'rhapsody_social';
+    }
+
+    public function renderActivityWidget(ActivityInterface $activity)
+    {
+    	return $this->activityTemplateManager->renderActivity($activity);
+    }
+
+    public function renderActivityCommentWidget(CommentInterface $comment)
+    {
+    	return $this->activityTemplateManager->render($comment);
+    }
+
+    public function renderActivityContentWidget(ActivityContentInterface $activityContent)
+    {
+    	return $this->activityTemplateManager->renderActivityContent($activityContent);
     }
 }

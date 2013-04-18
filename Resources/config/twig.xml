@@ -20,6 +20,32 @@
             <tag name="twig.extension"/>
             <argument type="service" id="rhapsody.social.twig.activity_twig_template_manager" />
         </service>
+        
+        <!-- Templates ===================================================== -->
+
+        <service id="rhapsody.social.twig.template.activity_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Model\ActivityInterface</argument>
+            <argument>RhapsodySocialBundle:Template:activity.html.twig</argument>
+        </service>
+        
+        <service id="rhapsody.social.twig.template.comment_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Model\CommentInterface</argument>
+            <argument>RhapsodySocialBundle:Template:comment.html.twig</argument>
+        </service>
+
+        <service id="rhapsody.social.twig.template.url_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Model\UrlContent</argument>
+            <argument>RhapsodySocialBundle:Template:url_content.html.twig</argument>
+        </service>
+        
+        <service id="rhapsody.social.twig.template.image_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
+            <tag name="rhapsody.social.activity_template" />
+            <argument>Rhapsody\SocialBundle\Model\ImageContent</argument>
+            <argument>RhapsodySocialBundle:Template:image_content.html.twig</argument>
+        </service>
     </services>
 
 </container>

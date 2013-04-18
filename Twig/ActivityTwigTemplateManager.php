@@ -30,43 +30,25 @@ namespace Rhapsody\SocialBundle\Twig;
 use Doctrine\Common\Util\Debug;
 
 use Rhapsody\CommonsBundle\Twig\TwigTemplateManager;
+use Rhapsody\SocialBundle\Model\ActivityContentInterface;
 use Rhapsody\SocialBundle\Model\ActivityInterface;
+
 
 class ActivityTwigTemplateManager extends TwigTemplateManager
 {
-
-	/**
-	 *
-	 * @param ActivityInterface $activity
-	 */
-	public function getActivityTemplate(ActivityInterface $activity)
-	{
-		$content = $activity->getContent();
-
-		if ($content !== null) {
-			$class = get_class($content);
-			if (array_key_exists($class, $this->templateMap)) {
-				return $this->getManagedTemplate($content);
-			}
-		}
-		return $this->getManagedTemplate($activity);
-	}
-
-	/**
-	 *
-	 * @param ActivityInterface $activity
-	 */
-	public function getActivityView(ActivityInterface $activity)
-	{
-		$template = $this->getActivityTemplate($activity);
-		return $template->getView();
-	}
-
 	public function renderActivity(ActivityInterface $activity, array $data = array())
 	{
-		$view = $this->getActivityView($activity);
+		$view = $this->getView($activity);
 
-		$data = array_merge(array('activity' => $activity), $data);
+		$data = array_merge(array('_widget' => $activity), $data);
+		return $this->twig->render($view, $data);
+	}
+
+	public function renderActivityContent(ActivityContentInterface $activityContent, array $data = array())
+	{
+		$view = $this->getView($activityContent);
+
+		$data = array_merge(array('_widget' => $activityContent), $data);
 		return $this->twig->render($view, $data);
 	}
 }

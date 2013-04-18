@@ -14,27 +14,6 @@
         <service id="rhapsody.social.document_manager" factory-service="doctrine_mongodb" factory-method="getManager" class="Doctrine\ODM\MongoDB\DocumentManager" public="false">
             <argument>%rhapsody_social.activity_manager_name%</argument>
         </service>
-
-      
-        <!-- Activity Templates ============================================ -->
-
-        <service id="rhapsody.social.twig.template.activity_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
-            <tag name="rhapsody.social.activity_template" />
-            <argument>Rhapsody\SocialBundle\Document\Activity</argument>
-            <argument>RhapsodySocialBundle:Activity:activity.html.twig</argument>
-        </service>
-
-        <service id="rhapsody.social.twig.template.url_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
-            <tag name="rhapsody.social.activity_template" />
-            <argument>Rhapsody\SocialBundle\Document\UrlContent</argument>
-            <argument>RhapsodySocialBundle:Activity:url_content.html.twig</argument>
-        </service>
-        
-        <service id="rhapsody.social.twig.template.image_content_template" class="Rhapsody\CommonsBundle\Twig\TwigManagedTemplate">
-            <tag name="rhapsody.social.activity_template" />
-            <argument>Rhapsody\SocialBundle\Document\ImageContent</argument>
-            <argument>RhapsodySocialBundle:Activity:image_content.html.twig</argument>
-        </service>
     </services>
 
 </container>

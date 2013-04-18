@@ -1,0 +1,31 @@
+{#
+
+#}
+<div class="activity clearfix">
+	<div class="user-avatar" style="float: left; margin-right: 10px;"></div>
+	<div style="float: left; width: 450px;">
+		<div>
+			<div>{{ _widget.author }}</div>
+			<div class="activity-text">
+				{{ _widget.text }}
+			</div>
+			{% if _widget.content is not null %}
+				{{ activity_content_widget(_widget.content) }}
+			{% endif %}
+			<ul class="inline-list">
+				<li><a href="">Like</a></li>
+				<li>&#183;</li>
+				<li><a href="">Comment</a></li>
+				<li>&#183;</li>
+				<li><a href="">Share</a></li>
+				<li>&#183;</li>
+				<li>April 7 at 12:00pm</li>
+			</ul>
+		</div>
+		<div class="activity-comments">
+		{% for comment in _widget.comments %}
+			{{ activity_comment_widget(comment) }}
+		{% endfor %}
+		</div>
+	</div>
+</div>

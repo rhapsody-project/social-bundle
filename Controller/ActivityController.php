@@ -53,7 +53,7 @@ class ActivityController extends Controller
 		$activity = new Activity();
 		$form = $this->createForm(new ActivityForm());
 		if ($request->isMethod('post')) {
-			$form->bindRequest($request);
+			$form->handleRequest($request);
 			if ($form->isValid()) {
 				$activity = $form->getData();
 				$activityManager->updateActivity($activity);

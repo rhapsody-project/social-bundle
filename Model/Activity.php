@@ -34,10 +34,15 @@ namespace Rhapsody\SocialBundle\Model;
  * which can receive the content. This effectively makes the activity a wrapper
  * around different types of actionable content.
  *
- * @author Sean.Quinn
- * @since 1.0
+ * @author    Sean.Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Copyright (c) 2015 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
-class Activity implements ActivityInterface
+class Activity implements ActivityInterface, ShareableInterface
 {
 
 	/**
@@ -84,7 +89,7 @@ class Activity implements ActivityInterface
 	protected $endorsements = array();
 
 	/**
-	 * The source of this activity.
+	 * The source of this activity, e.g. user, group, or site-specific context.
 	 * @var mixed
 	 * @access protected
 	 */
@@ -104,15 +109,22 @@ class Activity implements ActivityInterface
 	 */
 	protected $type;
 
+	/**
+	 * The user who posted this activity.
+	 * @var mixed
+	 * @access protected
+	 */
+	protected $user;
+
 	public function __construct()
 	{
-		$this->date = new \DateTime;
+		$this->date = new \DateTime();
 	}
 
 	public function __toString()
 	{
 		$class = get_class($this);
-		return $class.'@'.spl_object_hash($this);
+		return $class . '@' . spl_object_hash($this);
 	}
 
 	public function getAuthor()
@@ -140,14 +152,14 @@ class Activity implements ActivityInterface
 		return $this->endorsements;
 	}
 
-	public function getSource()
-	{
-		return $this->source;
-	}
-
 	public function getId()
 	{
 		return $this->id;
+	}
+
+	public function getSource()
+	{
+		return $this->source;
 	}
 
 	public function getText()
@@ -198,6 +210,11 @@ class Activity implements ActivityInterface
 		$this->endorsements = $endorsements;
 	}
 
+	public function setId($id)
+	{
+		$this->id = $id;
+	}
+
 	/**
 	 *
 	 * @param ActivitySourceInterface $source
@@ -205,11 +222,6 @@ class Activity implements ActivityInterface
 	public function setSource($source)
 	{
 		$this->source = $source;
-	}
-
-	public function setId($id)
-	{
-		$this->id = $id;
 	}
 
 	public function setText($text)

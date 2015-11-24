@@ -11,33 +11,32 @@ namespace Rhapsody\SocialBundle\Model;
  */
 abstract class Affiliation implements AffiliationInterface
 {
-
+	
 	/**
 	 * The entity that the <tt>$user</tt> is affiliated with.
 	 * @var mixed
 	 * @access protected
 	 */
 	protected $affiliate;
-
+	
 	/**
 	 * The date that this affiliation was formed.
 	 * @var \DateTime
 	 * @access protected
 	 */
 	protected $date;
-
+	
 	/**
 	 * The group that this affiliation is classified in; may be null.
 	 * @var string
 	 * @access protected
 	 */
 	protected $group;
-
+	
 	/**
 	 * The user for whom this affiliation is established.
 	 * @var unknown
 	 * @access protected
 	 */
 	protected $user;
-
 }

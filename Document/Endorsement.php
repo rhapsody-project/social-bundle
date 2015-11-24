@@ -29,6 +29,15 @@ namespace Rhapsody\SocialBundle\Document;
 
 use Rhapsody\SocialBundle\Model\Endorsement as EndorsementModel;
 
+/**
+ *
+ * @author    Sean W. Quinn <sean.quinn@extesla.com>
+ * @package   Rhapsody\SocialBundle\Document
+ * @copyright Copyright (c) 2015 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
+ */
 class Endorsement extends EndorsementModel
 {
 

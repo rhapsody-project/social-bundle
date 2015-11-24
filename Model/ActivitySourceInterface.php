@@ -28,14 +28,19 @@
 namespace Rhapsody\SocialBundle\Model;
 
 /**
+ * The <code>ActivitySource</code> represents who, or what, generated an
+ * activity. An activity source is typically a user or a group, but could also
+ * be a forum or other domain object for auto-generated content.
  *
- * @author Sean.Quinn
- *
+ * @author    Sean W. Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Copyright (c) 2013 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
 interface ActivitySourceInterface
 {
-	/**
-	 *
-	 */
-	function getType();
+
 }

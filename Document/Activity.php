@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) 2015 Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -31,15 +31,22 @@ use Rhapsody\SocialBundle\Model\Activity as ActivityModel;
 
 /**
  *
- * @author Sean.Quinn
- * @since 1.0
+ * @author    Sean W. Quinn <sean.quinn@extesla.com>
+ * @package   Rhapsody\SocialBundle\Document
+ * @copyright Copyright (c) 2015 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
 class Activity extends ActivityModel
 {
+	use \Rhapsody\Commons\Traits\ObjectTrait;
+	use \Rhapsody\Commons\Traits\PropertyAwareTrait;
+
 	public function __construct()
 	{
 		parent::__construct();
-		$this->comments = new \Doctrine\Common\Collections\ArrayCollection;
-		$this->endorsements = new \Doctrine\Common\Collections\ArrayCollection;
+		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->endorsements = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+	<parameters>
+		<parameter key="rhapsody.social.form.factory.form_factory.class">Rhapsody\SocialBundle\Form\Factory\FormFactory</parameter>
+	</parameters>
+	<services>
+		<service id="rhapsody_social.activity.form.factory"
+			class="%rhapsody.social.form.factory.form_factory.class%">
+			<argument type="service" id="form.factory" />
+			<argument>%rhapsody_social.activity.form.name%</argument>
+			<argument>%rhapsody_social.activity.form.type%</argument>
+			<argument>%rhapsody_social.activity.form.validation_groups%</argument>
+			<argument type="collection" />
+		</service>
+		<service id="rhapsody_social.activity.form.type" class="Rhapsody\SocialBundle\Form\Type\ActivityType">
+			<tag name="form.type" alias="rhapsody_social_form_type_activity" />
+			<argument>%rhapsody_social.model.activity.class%</argument>
+		</service>
+	</services>
+</container>

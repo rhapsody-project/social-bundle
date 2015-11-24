@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) 2015 Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -29,10 +29,23 @@ namespace Rhapsody\SocialBundle\Model;
 
 /**
  *
- * @author Sean.Quinn
+ * @author    Sean.Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Copyright (c) 2015 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
-class Comment implements CommentInterface
+class Comment implements CommentInterface, EndorsementAwareInterface
 {
+
+	/**
+	 * The object identifier.
+	 * @var number
+	 * @access protected
+	 */
+	protected $id;
 
 	/**
 	 * The date that this activity was posted.
@@ -64,7 +77,7 @@ class Comment implements CommentInterface
 
 	public function __construct()
 	{
-		$this->date = new \DateTime;
+		$this->date = new \DateTime();
 	}
 
 	public function getDate()
@@ -72,9 +85,18 @@ class Comment implements CommentInterface
 		return $this->date;
 	}
 
+	/**
+	 * (non-PHPDoc)
+	 * @see \Rhapsody\SocialBundle\Model\EndorsementAwareInterface::getSocialContext()
+	 */
 	public function getEndorsements()
 	{
 		return $this->endorsements;
+	}
+
+	public function getId()
+	{
+		return $this->id;
 	}
 
 	public function getText()
@@ -99,6 +121,11 @@ class Comment implements CommentInterface
 	public function setEndorsements($endorsements)
 	{
 		$this->endorsements = $endorsements;
+	}
+
+	public function setId($id)
+	{
+		$this->id = $id;
 	}
 
 	public function setText($text)

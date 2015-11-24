@@ -42,63 +42,92 @@ class Configuration implements ConfigurationInterface
 
 	private function getSupportedDatabaseDrivers()
 	{
-		return array('orm', 'mongodb', 'couchdb', 'propel', 'custom');
+		return array('orm','mongodb','couchdb','propel','custom'
+		);
 	}
 
-    /**
-     * Generates the configuration tree.
-     *
-     * @return TreeBuilder
-     */
-    public function getConfigTreeBuilder()
-    {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('rhapsody_social');
+	/**
+	 * Generates the configuration tree.
+	 *
+	 * @return TreeBuilder
+	 */
+	public function getConfigTreeBuilder()
+	{
+		$treeBuilder = new TreeBuilder();
+		$rootNode = $treeBuilder->root('rhapsody_social');
 
-        $supportedDrivers = $this->getSupportedDatabaseDrivers();
-        $rootNode
-            ->children()
-                ->scalarNode('db_driver')
-                    ->validate()
-                        ->ifNotInArray($supportedDrivers)
-                        ->thenInvalid('The driver %s is not supported. Please choose one of '.json_encode($supportedDrivers))
-                    ->end()
-                    ->cannotBeOverwritten()
-                    ->isRequired()
-                    ->cannotBeEmpty()
-                ->end()
-                ->scalarNode('activity_class')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('activity_manager_name')->defaultNull()->end()
-            ->end()
-            // Using the custom driver requires changing the manager services
-            ->validate()
-                ->ifTrue(function($v){return 'custom' === $v['db_driver'] && 'rhapsody_blog.post_manager.default' === $v['service']['post_manager'];})
-                ->thenInvalid('You need to specify your own post manager service when using the "custom" driver.')
-            ->end();
+		$supportedDrivers = $this->getSupportedDatabaseDrivers();
+		$rootNode->children()
+			->scalarNode('db_driver')
+				->validate()
+					->ifNotInArray($supportedDrivers)
+					->thenInvalid('The driver %s is not supported. Please choose one of ' . json_encode($supportedDrivers))
+				->end()
+				->cannotBeOverwritten()
+				->isRequired()
+				->cannotBeEmpty()
+			->end()
+		->end();
+		// Using the custom driver requires changing the manager services
+		// Using the custom driver requires changing the manager services
+		//->validate()
+		//		->ifTrue(function($v){return 'custom' === $v['db_driver'] && 'rhapsody.social.doctrine.activity_manager' === $v['service']['activity_manager'];})
+		//		->thenInvalid('You need to specify your own activity manager service when using the "custom" driver.')
+		//->end()
 
-        // ** Add additional sections...
-        $this->addServiceSection($rootNode);
+		$this->addActivitySection($rootNode);
+		$this->addProfileSection($rootNode);
+		return $treeBuilder;
+	}
 
-        return $treeBuilder;
-    }
+	/**
+	 * Adds the activity section to the Rhapsody SocialBundle configuration.
+	 *
+	 * @param ArrayNodeDefinition $node the root node.
+	 */
+	private function addActivitySection(ArrayNodeDefinition $node)
+	{
+		$node->children()
+			->arrayNode('activity')
+				->addDefaultsIfNotSet()
+				->canBeUnset()
+				->children()
+					->scalarNode('allow_comment')->defaultTrue()->treatNullLike(true)->end()
+					->scalarNode('allow_endorsement')->defaultTrue()->treatNullLike(true)->end()
+					->scalarNode('allow_share')->defaultTrue()->treatNullLike(true)->end()
+					->scalarNode('activity_class')->isRequired()->cannotBeEmpty()->end()
+					->scalarNode('activity_manager')->defaultValue('rhapsody.social.doctrine.activity_manager')->end()
+					->arrayNode('form')
+						->addDefaultsIfNotSet()
+						->children()
+							->scalarNode('type')->defaultValue('rhapsody_social_form_type_activity')->end()
+							->scalarNode('name')->defaultValue('rhapsody_social_activity_form')->end()
+							->arrayNode('validation_groups')
+								->prototype('scalar')->end()
+								->treatNullLike(array())
+							->end()
+						->end()
+					->end()
+				->end()
+			->end()
+		->end();
+	}
 
-
-    /**
-     *
-     * @param ArrayNodeDefinition $node
-     */
-    private function addServiceSection(ArrayNodeDefinition $node)
-    {
-    	$node
-    		->addDefaultsIfNotSet()
-    		->children()
-    			->arrayNode('service')
-    				->addDefaultsIfNotSet()
-    				->children()
-    					->scalarNode('activity_manager')->defaultValue('rhapsody_social.activity_manager.default')->end()
-    				->end()
-    			->end()
-    		->end()
-    	->end();
-    }
+	/**
+	 * Adds the profile section to the Rhapsody SocialBundle configuration.
+	 *
+	 * @param ArrayNodeDefinition $node the root node.
+	 */
+	private function addProfileSection(ArrayNodeDefinition $node)
+	{
+		$node->children()
+			->arrayNode('profile')
+				->addDefaultsIfNotSet()
+				->canBeUnset()
+				->children()
+					->scalarNode('profile_class')->isRequired()->cannotBeEmpty()->end()
+				->end()
+			->end()
+		->end();
+	}
 }

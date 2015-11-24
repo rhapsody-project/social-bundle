@@ -1,0 +1,142 @@
+{# Copyright (c) 2015 Rhapsody Project
+ #
+ # Licensed under the MIT License (http://opensource.org/licenses/MIT)
+ #
+ # Permission is hereby granted, free of charge, to any
+ # person obtaining a copy of this software and associated
+ # documentation files (the "Software"), to deal in the
+ # Software without restriction, including without limitation
+ # the rights to use, copy, modify, merge, publish,
+ # distribute, sublicense, and/or sell copies of the Software,
+ # and to permit persons to whom the Software is furnished
+ # to do so, subject to the following conditions:
+ #
+ # The above copyright notice and this permission notice
+ # shall be included in all copies or substantial portions of
+ # the Software.
+ #
+ # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+ # KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ # PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ # OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ # OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+ # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ #}
+{% trans_default_domain "RhapsodyForumBundle" %}
+
+{% set author    = activity.author %}
+{% set source    = activity.source %}
+{% set timestamp = activity.date is empty ? '' : activity.date.getTimestamp() %}
+
+<article id="activity-{{ activity.id }}" data-activity-id="{{ activity.id }}" data-user-id="{{ author.id|default('unknown-user') }}" class="activity activity-box">
+
+	<div class="row activity-header">
+		<div>
+			{# AUTHOR:
+			 #   If the author is not empty
+			 #}
+			{% if author is not empty %}
+			<a class="activity-author" href="" data-user-id="{{ author.id }}">
+				{{ rhapsody_avatar(author, { 'size': 'sm-avatar' }) }}
+				<strong class="fullname">{{ author.name }}</strong>
+				<span class="username" data-aria-label-part=""><span>@</span><strong>{{ author.username }}</strong></span>
+			</a>
+			{% if source is not empty %}<small>via</small>{% endif %}
+			{% endif %}
+
+			{# SOURCE:
+			 #   The source of the activity. If the activity is sourced from
+			 #   another activity or piece of media, this is where we give
+			 #   attribution to the source.
+			 #}
+			{% if source is not empty %}
+			<a class="activity-source" href="" data-source-id="{{ source.id }}">
+				{{ rhapsody_social_activity_source_attribution(source) }}
+			</a>
+			{% endif %}
+		</div>
+		<div class="activity-time">
+			<small class="activity-timestamp timestamp timestamp-short" data-format="tiny" data-time="{{ timestamp }}" title="{{ timestamp|date('F j, Y g:ia') }}">
+				{{ timestamp|date("M j") }} <span class="relative-date with-year">({{ timestamp|time_since }})</span>
+			</small>
+		</div>
+	</div>
+
+	{% if (activity.text is not empty) or (activity.content is not empty) %}
+	<div class="row">
+		<div class="activity-text">
+			{{ activity.text|raw|markdown }}
+		</div>
+		{% if activity.content is not empty %}
+		<div class="well" data-share-type="{{ rhapsody_social_get_share_type(activity.content) }}" data-share-id="{{ activity.content.id }}">
+			{{ render_shared_media(activity.content) }}
+		</div>
+		{% endif %}
+	</div>
+	{% endif %}
+
+	{% if rhapsody_social_is_activity_interactive() == true %}
+	<div class="row activity-actions">
+		<nav class="navbar navbar-default">
+			<ul class="nav navbar-nav">
+				{% if rhapsody_social_config('rhapsody_social.activity.allow_comment') == true %}
+				<li>
+					<a href="">
+						<span class="glyphicons glyphicons-share"></span> Reply
+					</a>
+				</li>
+				{% endif %}
+				{% if rhapsody_social_config('rhapsody_social.activity.allow_endorsement') == true %}
+				<li>
+					<a href="">
+						<span class="glyphicons glyphicons-heart"></span> Endorse
+					</a>
+				</li>
+				{% endif %}
+				{% if rhapsody_social_config('rhapsody_social.activity.allow_share') == true %}
+				<li>
+					<a href="">
+						<span class="glyphicons glyphicons-retweet"></span> Share
+					</a>
+				</li>
+				{% endif %}
+			</ul>
+		</nav>
+	</div>
+	{% endif %}
+	{% if rhapsody_social_config('rhapsody_social.activity.allow_comment') == true %}
+	<div class="row activity-comments">
+		{% set hide_comments = activity.comments|length > 5 %}
+		{% set threshold = hide_comments ? -2 : 0 %}
+
+		{% if hide_comments == true %}
+		{% set hidden_comments = activity.comments|slice(0, threshold)|length %}
+		<div class="show-more-comments btn-link">View {{ hidden_comments }} previous comments</div>
+		<div class="more-comments">
+			{% for comment in activity.comments|slice(0, threshold) %}
+				{% include 'RhapsodySocialBundle:Activity:comment.html.twig' with { 'comment': comment } only %}
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<div class="recent-comments">
+			{% for comment in activity.comments|slice(threshold, null) %}
+				{% include 'RhapsodySocialBundle:Activity:comment.html.twig' with { 'comment': comment } only %}
+			{% endfor %}
+		</div>
+
+		<div class="add-comment">
+			<textarea class="form-control" placeholder="Write a comment"></textarea>
+			<div class="pull-right">
+				<span class="characters-left-label">
+					<span class="characters-left-counter">500</span>
+					characters left
+				</span>
+				<button class="btn btn-primary text-right">Comment</button>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+</article>

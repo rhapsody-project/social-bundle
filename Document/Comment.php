@@ -29,7 +29,23 @@ namespace Rhapsody\SocialBundle\Document;
 
 use Rhapsody\SocialBundle\Model\Comment as CommentModel;
 
+/**
+ *
+ * @author    Sean W. Quinn <sean.quinn@extesla.com>
+ * @package   Rhapsody\SocialBundle\Document
+ * @copyright Copyright (c) 2015 Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
+ */
 class Comment extends CommentModel
 {
+	use \Rhapsody\Commons\Traits\ObjectTrait;
+	use \Rhapsody\Commons\Traits\PropertyAwareTrait;
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->endorsements = new \Doctrine\Common\Collections\ArrayCollection;
+	}
 }

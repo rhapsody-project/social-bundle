@@ -1,0 +1,11 @@
+a.subtle, a.subtle:hover { color: inherit; text-decoration: none; cursor: pointer; }
+
+.activity { margin: 15px 0px; padding: 15px; }
+.activity-box { background-color: #fff; border: 1px solid #ccc; }
+
+.activity-header { margin-bottom: 10px; }
+.activity-actions .navbar { margin-bottom: 5px; }
+
+.activity-comments .add-comment textarea.form-control{ margin-bottom: 10px; }
+.activity-comments .add-comment .characters-left-label { margin-right: 10px; }
+.activity-comments .add-comment .characters-left-label .characters-left-counter { margin-right: 0.15em; }

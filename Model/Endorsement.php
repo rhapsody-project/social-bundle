@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) 2015 Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,7 +27,7 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
-class Endorsement
+class Endorsement implements EndorsementInterface
 {
 
 	/**
@@ -51,7 +51,7 @@ class Endorsement
 	public function __toString()
 	{
 		$class = get_class($this);
-		return $class.'@'.spl_object_hash($this);
+		return $class . '@' . spl_object_hash($this);
 	}
 
 	public function getDate()
@@ -63,6 +63,4 @@ class Endorsement
 	{
 		return $this->user;
 	}
-
-
 }

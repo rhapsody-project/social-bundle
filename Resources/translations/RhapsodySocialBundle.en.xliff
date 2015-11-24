@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="" >
+    <body>
+      <trans-unit id="rhapsody.social.misc.activity">
+        <source>rhapsody.social.misc.activity</source>
+        <target>activity</target>
+      </trans-unit>
+      <trans-unit id="rhapsody.social.misc.stream">
+        <source>rhapsody.social.misc.stream</source>
+        <target>stream</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

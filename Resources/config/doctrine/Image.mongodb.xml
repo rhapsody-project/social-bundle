@@ -3,10 +3,7 @@
 	xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
-
-	<embedded-document name="Rhapsody\SocialBundle\Document\Endorsement">
-		<field name="date" field="date" type="date" />
-		<reference-one field="user" />
+	<embedded-document name="Rhapsody\SocialBundle\Document\Image">
+		<field name="type" field="type" type="string" />
 	</embedded-document>
-
 </doctrine-mongo-mapping>

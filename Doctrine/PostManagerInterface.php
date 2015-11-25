@@ -29,6 +29,7 @@ namespace Rhapsody\SocialBundle\Doctrine;
 
 use Rhapsody\SocialBundle\Model\PostInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
+use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
 
 /**
  *
@@ -44,6 +45,13 @@ interface PostManagerInterface
 {
 
 	function createPost(PostInterface $post, TopicInterface $topic, $user);
+
+	/**
+	 * Return the registered form factory.
+	 *
+	 * @return FactoryInterface the form factory.
+	 */
+	function getFormFactory();
 
 	function update(PostInterface $post, $andFlush = true);
 

@@ -31,16 +31,15 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Monolog\Logger;
 use Rhapsody\SocialBundle\Doctrine\PostManagerInterface;
 use Rhapsody\SocialBundle\Doctrine\TopicManagerInterface;
+use Rhapsody\SocialBundle\Event\TopicEventBuilder;
 use Rhapsody\SocialBundle\Factory\BuilderFactoryInterface;
-use Rhapsody\SocialBundle\Model\CategoryInterface;
-use Rhapsody\SocialBundle\Model\SocialContextInterface;
+use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
 use Rhapsody\SocialBundle\Model\PostInterface;
+use Rhapsody\SocialBundle\Model\SocialContextInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
+use Rhapsody\SocialBundle\RhapsodySocialEvents;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Rhapsody\SocialBundle\Event\ActivityEvent;
-use Rhapsody\SocialBundle\RhapsodySocialEvents;
-use Rhapsody\SocialBundle\Event\TopicEvent;
 
 /**
  *
@@ -104,13 +103,25 @@ class TopicManager implements TopicManagerInterface
 	protected $builderFactory;
 
 	/**
+	 * The form factory.
+	 * @var \Rhapsody\SocialBundle\Form\Factory\FactoryInterface
+	 */
+	protected $formFactory;
+
+	/**
 	 * The class.
 	 * @var string
 	 * @access protected
 	 */
 	protected $class;
 
-	public function __construct(ObjectManager $objectManager, EventDispatcherInterface $eventDispatcher, BuilderFactoryInterface $builderFactory, PostManagerInterface $postManager, $class)
+	public function __construct(
+			ObjectManager $objectManager,
+			EventDispatcherInterface $eventDispatcher,
+			BuilderFactoryInterface $builderFactory,
+			FactoryInterface $formFactory,
+			PostManagerInterface $postManager,
+			$class)
 	{
 		$repository = $objectManager->getRepository($class);
 		$metadata = $objectManager->getClassMetadata($class);
@@ -121,6 +132,7 @@ class TopicManager implements TopicManagerInterface
 		$this->objectManager = $objectManager;
 		$this->postManager = $postManager;
 		$this->builderFactory = $builderFactory;
+		$this->formFactory = $formFactory;
 
 		$this->logger = new Logger(get_class($this));
 	}
@@ -170,7 +182,7 @@ class TopicManager implements TopicManagerInterface
 	 */
 	public function findById($id)
 	{
-			return $this->repository->findById($id);
+		return $this->repository->findById($id);
 	}
 
 	/**
@@ -179,7 +191,7 @@ class TopicManager implements TopicManagerInterface
 	 */
 	public function findBySlug($slug)
 	{
-			return $this->repository->findBySlug($slug);
+		return $this->repository->findBySlug($slug);
 	}
 
 	/**
@@ -223,6 +235,11 @@ class TopicManager implements TopicManagerInterface
 			}
 		}
 		return array_values($users);
+	}
+
+	public function getFormFactory()
+	{
+		return $this->formFactory;
 	}
 
 	public function markTopicAsViewed(TopicInterface $topic, UserInterface $user)
@@ -281,6 +298,22 @@ class TopicManager implements TopicManagerInterface
 		$topic->setPostCount($posts);
 		$topic->setReplyCount($posts - 1);
 		$this->update($topic);
+	}
+
+	/**
+	 * Trigger an event upon viewing a topic.
+	 *
+	 * @param TopicInterface $topic the topic being viewed.
+	 * @param mixed $user the user viewing the event.
+	 * @param string $eventName the event name.
+	 */
+	public function viewTopic(TopicInterface $topic, $user, $eventName = RhapsodySocialEvents::VIEW_TOPIC)
+	{
+		$topicEventBuilder = TopicEventBuilder::create()
+			->setTopic($topic)
+			->setUser($user);
+		$event = $topicEventBuilder->build();
+		$this->eventDispatcher->dispatch($eventName, $event);
 	}
 
 }

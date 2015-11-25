@@ -39,8 +39,9 @@ namespace Rhapsody\SocialBundle\Form\Factory;
  */
 interface FactoryInterface
 {
+	// TODO: This should be moved to a different project, e.g. Rhapsody/Commons
     /**
-     * @return \Symfony\Component\Form\FormInterface
+     * @return mixed
      */
-    public function createForm();
+    public function create();
 }

@@ -34,6 +34,7 @@ use Rhapsody\SocialBundle\Factory\BuilderFactoryInterface;
 use Rhapsody\SocialBundle\Model\PostInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
 
 /**
  *
@@ -91,13 +92,24 @@ class PostManager implements PostManagerInterface
 	protected $builderFactory;
 
 	/**
+	 * The form factory.
+	 * @var \Rhapsody\SocialBundle\Form\Factory\FactoryInterface
+	 */
+	protected $formFactory;
+
+	/**
 	 * The class.
 	 * @var string
 	 * @access protected
 	 */
 	protected $class;
 
-	public function __construct(ObjectManager $objectManager, EventDispatcherInterface $eventDispatcher, BuilderFactoryInterface $builderFactory, $class)
+	public function __construct(
+			ObjectManager $objectManager,
+			EventDispatcherInterface $eventDispatcher,
+			BuilderFactoryInterface $builderFactory,
+			FactoryInterface $formFactory,
+			$class)
 	{
 		$repository = $objectManager->getRepository($class);
 		$metadata = $objectManager->getClassMetadata($class);
@@ -107,6 +119,7 @@ class PostManager implements PostManagerInterface
 		$this->eventDispatcher = $eventDispatcher;
 		$this->objectManager = $objectManager;
 		$this->builderFactory = $builderFactory;
+		$this->formFactory = $formFactory;
 
 		$this->logger = new Logger(get_class($this));
 	}
@@ -182,6 +195,15 @@ class PostManager implements PostManagerInterface
 	{
 		$results = $this->repository->findAll();
 		return !$map ? array_values($map) : $map;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see \Rhapsody\SocialBundle\Doctrine\PostManagerInterface::getFormFactory()
+	 */
+	public function getFormFactory()
+	{
+		return $this->formFactory;
 	}
 
 	public function getPostCountByTopic($topic)

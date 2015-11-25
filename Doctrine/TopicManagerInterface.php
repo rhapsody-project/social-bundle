@@ -27,6 +27,7 @@
  */
 namespace Rhapsody\SocialBundle\Doctrine;
 
+use Rhapsody\SocialBundle\Model\PostInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -43,8 +44,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 interface TopicManagerInterface
 {
 
+	function createTopic(TopicInterface $topic, PostInterface $post, $user);
+
+	function getFormFactory();
+
 	function markTopicAsViewed(TopicInterface $topic, UserInterface $user);
 
 	function update(TopicInterface $forum, $andFlush = true);
 
+	/**
+	 * Trigger an event upon viewing a topic.
+	 *
+	 * @param TopicInterface $topic the topic being viewed.
+	 * @param mixed $user the user viewing the event.
+	 * @param string $eventName the event name.
+	 */
+	function viewTopic(TopicInterface $topic, $user, $eventName);
 }

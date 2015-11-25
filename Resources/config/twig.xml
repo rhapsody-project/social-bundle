@@ -4,11 +4,20 @@
 	xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 	<!-- Parameters -->
 	<parameters>
+		<parameter key="rhapsody.social.mailer.twig_swift_mailer.class">Rhapsody\SocialBundle\Mailer\TwigSwiftMailer</parameter>
 		<parameter key="rhapsody.social.twig.activity_twig_template_manager">Rhapsody\SocialBundle\Twig\ActivityTwigTemplateManager</parameter>
 		<parameter key="rhapsody.social.twig.extension.rhapsody_social_extension.class">Rhapsody\SocialBundle\Twig\Extension\RhapsodySocialExtension</parameter>
 	</parameters>
 	<!-- Services -->
 	<services>
+		<service id="rhapsody.social.mailer.twig_swift_mailer" class="%rhapsody.social.mailer.twig_swift_mailer.class%">
+			<argument type="service" id="mailer" />
+			<argument type="service" id="router" />
+			<argument type="service" id="twig" />
+			<argument>%rhapsody_social.mail.sender_email%</argument>
+			<argument>%rhapsody_social.mail.sender_name%</argument>
+		</service>
+
 		<service id="rhapsody.social.twig.activity_twig_template_manager" class="%rhapsody.social.twig.activity_twig_template_manager%" public="true">
 			<argument type="service" id="twig" />
 		</service>

@@ -49,11 +49,45 @@ class TwigSwiftMailer implements MailerInterface
 	protected $router;
 	protected $twig;
 
-	public function __construct(\Swift_Mailer $mailer, UrlGeneratorInterface $router, \Twig_Environment $twig)
+	/**
+	 * The email address associated with this mailer.
+	 * @var string
+	 */
+	protected $senderEmail;
+
+	/**
+	 * The name of the entity sending the emails.
+	 * @var string
+	 */
+	protected $senderName;
+
+	public function __construct(\Swift_Mailer $mailer, UrlGeneratorInterface $router, \Twig_Environment $twig, $senderEmail, $senderName)
 	{
 		$this->mailer = $mailer;
 		$this->router = $router;
 		$this->twig = $twig;
+		$this->senderEmail = $senderEmail;
+		$this->senderName = $senderName;
+	}
+
+	/**
+	 * Returns the sender's email address.
+	 *
+	 * @return string the sender's email address.
+	 */
+	public function getSenderEmail()
+	{
+		return $this->senderEmail;
+	}
+
+	/**
+	 * Returns the sender's name.
+	 *
+	 * @return string the sender's name.
+	 */
+	public function getSenderName()
+	{
+		return $this->senderName;
 	}
 
 	/**

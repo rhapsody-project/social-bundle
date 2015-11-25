@@ -76,6 +76,7 @@ class Configuration implements ConfigurationInterface
 		//->end()
 
 		$this->addActivitySection($rootNode);
+		$this->addMailSection($rootNode);
 		$this->addProfileSection($rootNode);
 		return $treeBuilder;
 	}
@@ -111,6 +112,27 @@ class Configuration implements ConfigurationInterface
 				->end()
 			->end()
 		->end();
+	}
+
+	/**
+	 * Adds the <code>mail</code> section to the Rhapsody SocialBundle
+	 * configuration.
+	 *
+	 * @param ArrayNodeDefinition $node the root node.
+	 */
+	private function addMailSection(ArrayNodeDefinition $node)
+	{
+		$node->children()
+			->arrayNode('mail')
+				->addDefaultsIfNotSet()
+				->canBeUnset()
+				->children()
+					->scalarNode('sender_email')->isRequired()->cannotBeEmpty()->end()
+					->scalarNode('sender_name')->isRequired()->cannotBeEmpty()->end()
+				->end()
+			->end()
+		->end()
+		;
 	}
 
 	/**

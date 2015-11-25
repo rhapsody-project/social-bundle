@@ -51,4 +51,6 @@ class RhapsodySocialEvents
 	 */
 	const NEW_ACTIVITY = 'rhapsody.social.event.activity.new';
 
+	const VIEW_TOPIC = 'rhapsody.social.event.topic.view';
+
 }

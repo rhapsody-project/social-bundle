@@ -27,11 +27,7 @@
  */
 namespace Rhapsody\SocialBundle\Controller\Delegate;
 
-use FOS\RestBundle\View\View;
-use JMS\Serializer\SerializationContext;
 use Rhapsody\RestBundle\HttpFoundation\Controller\Delegate;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  *

@@ -30,8 +30,8 @@
 {% endblock %}
 
 {% block rhapsody_social_shared %}
-	{% set first_post = topic.post %}
-	<a href="{{ path('rhapsody_social_topic_view', { topic: _widget.id }) }}">
+	{% set first_post = _widget.post %}
+	<a href="{{ path('rhapsody_social_topic_view', { topic: _widget.id }) }}" class="subtle">
 		<div>
 			<div></div>
 			<div class="row">
@@ -39,7 +39,7 @@
 					<span class="activity-media new-topic">New Topic&nbsp;</span>
 					<span>{{ _widget.title }}</span>
 				</h3>
-				<small>(by {{ _widget.author.username }})</small>
+				<small>(by {{ _widget.user.username }})</small>
 				<p>
 				{{ first_post.text|markdown_striptags|abbreviate(140, false) }}
 				</p>

@@ -161,6 +161,12 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	protected $slug;
 
 	/**
+	 * The tags associated with a topic.
+	 * @var array
+	 */
+	protected $tags;
+
+	/**
 	 * The title of the topic.
 	 * @var string
 	 * @access protected
@@ -197,6 +203,7 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 		$this->created = new \DateTime;
 		$this->lastUpdated = new \DateTime;
 		$this->locked = false;
+		$this->tags = array();
 	}
 
 	/**
@@ -215,15 +222,6 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	public function getCreated()
 	{
 		return $this->created;
-	}
-
-	/**
-	 * (non-PHPDoc)
-	 * @see \Rhapsody\SocialBundle\Model\ForumAwareInterface::getForum()
-	 */
-	public function getSocialContext()
-	{
-		return $this->socialContext;
 	}
 
 	/**
@@ -301,6 +299,20 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	public function getSlug()
 	{
 		return $this->slug;
+	}
+
+	/**
+	 * (non-PHPDoc)
+	 * @see \Rhapsody\SocialBundle\Model\ForumAwareInterface::getForum()
+	 */
+	public function getSocialContext()
+	{
+		return $this->socialContext;
+	}
+
+	public function getTags()
+	{
+		return $this->tags;
 	}
 
 	/**
@@ -399,6 +411,11 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	public function setLastPost($lastPost)
 	{
 		$this->lastPost = $lastPost;
+	}
+
+	public function setTags($tags)
+	{
+		$this->tags = $tags;
 	}
 
 	public function setLastUpdated($lastUpdated)

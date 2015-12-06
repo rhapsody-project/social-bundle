@@ -34,7 +34,6 @@ use Rhapsody\ComponentExtensionBundle\Exception\FormExceptionFactory;
 use Rhapsody\RestBundle\HttpFoundation\Controller\Delegate;
 use Rhapsody\SocialBundle\Doctrine\PostManagerInterface;
 use Rhapsody\SocialBundle\Doctrine\TopicManagerInterface;
-use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
 use Rhapsody\SocialBundle\Model\PostInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,11 +64,11 @@ class PostDelegate extends Delegate
 	 */
 	private $topicManager;
 
-	public function __construct(PostManagerInterface $postManager, TopicManagerInterface $topicManager)
+	public function __construct(TopicManagerInterface $topicManager, PostManagerInterface $postManager)
 	{
 		parent::__construct();
-		$this->postManager = $postManager;
 		$this->topicManager = $topicManager;
+		$this->postManager = $postManager;
 	}
 
 	/**
@@ -109,8 +108,9 @@ class PostDelegate extends Delegate
 		$topic->setLastPost($data);
 		$this->topicManager->update($topic);
 
-		$this->container->get('session')->getFlashBag()->add('success', 'rhapsody.forum.post.created');
-		$view = RouteRedirectView::create('rhapsody_forum_topic_view', array('topic' => $topic->id, 'post' => $post->id))
+		$message = $this->get('translator')->trans('rhapsody.social.post.created', array(), 'RhapsodySocialBundle');
+		$this->container->get('session')->getFlashBag()->add('success', $message);
+		$view = RouteRedirectView::create('rhapsody_social_topic_view', array('topic' => $topic->id, 'post' => $post->id))
 			->setFormat($request->getRequestFormat('html'));
 		$response = $this->createResponseBuilder($view);
 		return array($topic, $post, $response);

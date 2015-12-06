@@ -6,6 +6,8 @@
 
     <parameters>
       <parameter key="rhapsody.social.controller.delegate.activity_delegate.class">Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate</parameter>
+      <parameter key="rhapsody.social.controller.delegate.post_delegate.class">Rhapsody\SocialBundle\Controller\Delegate\PostDelegate</parameter>
+      <parameter key="rhapsody.social.controller.delegate.topic_delegate.class">Rhapsody\SocialBundle\Controller\Delegate\TopicDelegate</parameter>
 	</parameters>
 
     <services>

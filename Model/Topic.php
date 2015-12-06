@@ -107,6 +107,12 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	protected $locked;
 
 	/**
+	 * Whether the topic is pinned or not.
+	 * @var boolean
+	 */
+	protected $pinned = false;
+
+	/**
 	 * The number of days to promote a topic at a higher visibility type. If
 	 * greater than <tt>zero</tt>, and a type other than <tt>normal</tt> is
 	 * selected than this topic will remain at the selected type for the
@@ -371,6 +377,15 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 
 	/**
 	 * (non-PHPDoc)
+	 * @see \Rhapsody\SocialBundle\Model\TopicInterface::isPinned()
+	 */
+	public function isPinned()
+	{
+		return $this->pinned;
+	}
+
+	/**
+	 * (non-PHPDoc)
 	 * @see \Rhapsody\SocialBundle\Model\TopicInterface::isReported()
 	 */
 	public function isReported()
@@ -431,6 +446,11 @@ class Topic implements TopicInterface, ShareableInterface, SocialContextAwareInt
 	public function setLocked($locked)
 	{
 		$this->locked = $locked;
+	}
+
+	public function setPinned($pinned)
+	{
+		$this->pinned = $pinned;
 	}
 
 	public function setPoll($poll)

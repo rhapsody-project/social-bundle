@@ -44,6 +44,8 @@ interface SocialContextManagerInterface
 
 	function findById($id);
 
+	function findFollowers(SocialContextInterface $socialContext);
+
 	function update(SocialContextInterface $category, $andFlush = true);
 
 }

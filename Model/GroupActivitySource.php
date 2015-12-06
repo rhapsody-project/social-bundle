@@ -34,7 +34,7 @@ namespace Rhapsody\SocialBundle\Model;
  */
 class GroupActivitySource extends ActivitySource
 {
-
+	
 	/**
 	 * The group.
 	 * @var unknown

@@ -41,6 +41,7 @@ use Rhapsody\SocialBundle\Model\SocialContextInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Rhapsody\SocialBundle\Model\PostInterface;
 
 /**
  *
@@ -67,11 +68,11 @@ class TopicDelegate extends Delegate
 	 */
 	private $topicManager;
 
-	public function __construct(PostManagerInterface $postManager, TopicManagerInterface $topicManager)
+	public function __construct(TopicManagerInterface $topicManager, PostManagerInterface $postManager)
 	{
 		parent::__construct();
-		$this->postManager = $postManager;
 		$this->topicManager = $topicManager;
+		$this->postManager = $postManager;
 	}
 
 	/**
@@ -180,19 +181,24 @@ class TopicDelegate extends Delegate
 	 * @param Request $request The request.
 	 * @param SocialContextInterface $forum The social context.
 	 * @param TopicInterface $topic The topic.
+	 * @param PostInterface $post
 	 */
-	public function replyAction(Request $request, SocialContextInterface $socialContext, TopicInterface $topic)
+	public function replyAction(Request $request, SocialContextInterface $socialContext, TopicInterface $topic, $post = null)
 	{
 		/** @var $post \Rhapsody\SocialBundle\Model\PostInterface */
-		$post = $this->postManager->newPost($topic);
+		$reply = $this->postManager->newPost($topic);
+
+		if ($request->query->getBoolean('quote', false)) {
+			$reply->text = $this->postManager->quoteText($post);
+		}
 
 		$formFactory = $this->postManager->getFormFactory();
 		$form = $formFactory->create();
-		$form->setData($post);
+		$form->setData($reply);
 
 		$posts = $this->postManager->findRecentByTopic($topic);
 
-		$view = View::create(array('socialContext' => $socialContext, 'topic' => $topic, 'post' => $post, 'posts' => $posts, 'form' => $form->createView()))
+		$view = View::create(array('socialContext' => $socialContext, 'topic' => $topic, 'post' => $reply, 'posts' => $posts, 'form' => $form->createView()))
 			->setFormat($request->getRequestFormat('html'))
 			->setSerializationContext(SerializationContext::create()->setGroups('context'))
 			->setTemplate('RhapsodySocialBundle:Topic:reply.html.twig');

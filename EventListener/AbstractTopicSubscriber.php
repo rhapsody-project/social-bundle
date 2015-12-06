@@ -126,7 +126,7 @@ abstract class AbstractTopicSubscriber implements EventSubscriberInterface
 
 		$filtered = array();
 		foreach ($users as $user) {
-			if (!array_search($user->getId(), $exclude)) {
+			if (array_search($user->getId(), $exclude) === false) {
 				$filtered[] = $user;
 			}
 		}
@@ -137,10 +137,10 @@ abstract class AbstractTopicSubscriber implements EventSubscriberInterface
 	 * Generates a system level activity.
 	 *
 	 */
-	public function generateActivity(TopicInterface $topic, UserInterface $user, ActivitySourceInterface $source)
+	public function generateActivity(ActivitySourceInterface $source, $content, $user = null)
 	{
 		$activity= $this->activityManager->newActivity(array(
-			'content' => $topic,
+			'content' => $content,
 			'source' => $source,
 			'author' => $user,
 			'user' => null,

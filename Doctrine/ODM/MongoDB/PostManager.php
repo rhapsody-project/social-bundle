@@ -135,7 +135,10 @@ class PostManager implements PostManagerInterface
 
 	public function createPost(PostInterface $post, TopicInterface $topic, $user)
 	{
+		$socialContext = $topic->getSocialContext();
+
 		$post->setAuthor($user);
+		$post->setSocialContext($socialContext);
 		$post->setTopic($topic);
 
 		$this->update($post);
@@ -220,6 +223,11 @@ class PostManager implements PostManagerInterface
 			->setTopic($topic)
 			->build();
 		return $post;
+	}
+
+	public function quoteText(PostInterface $post)
+	{
+		return $post->getText();
 	}
 
 	/**

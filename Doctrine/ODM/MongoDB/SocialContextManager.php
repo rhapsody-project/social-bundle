@@ -29,6 +29,7 @@ namespace Rhapsody\SocialBundle\Doctrine\ODM\MongoDB;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Monolog\Logger;
+use Rhapsody\SocialBundle\Doctrine\SocialContextManagerInterface;
 use Rhapsody\SocialBundle\Factory\BuilderFactoryInterface;
 use Rhapsody\SocialBundle\Model\SocialContextInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -131,6 +132,11 @@ class SocialContextManager implements SocialContextManagerInterface
 	public function findById($id)
 	{
 		return $this->repository->findById($id);
+	}
+
+	public function findFollowers(SocialContextInterface $socialContext)
+	{
+		return array();
 	}
 
 	/**

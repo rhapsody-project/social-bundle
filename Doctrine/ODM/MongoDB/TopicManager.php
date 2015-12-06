@@ -151,10 +151,13 @@ class TopicManager implements TopicManagerInterface
 
 	public function createTopic(TopicInterface $topic, PostInterface $post, $user)
 	{
+		$socialContext = $topic->getSocialContext();
+
 		// ** Set post properties.
 		$this->logger->debug("Assigning author and topic reference to post.");
 		$post->setAuthor($user);
 		$post->setTopic($topic);
+		$post->setSocialContext($socialContext);
 
 		// ** Set topic properties.
 		$this->logger->debug("Creating reference to post on topic.");
@@ -273,6 +276,23 @@ class TopicManager implements TopicManagerInterface
 	public function search($query, $paginate = true)
 	{
 		return $this->repository->search($query, $paginate);
+	}
+
+	/**
+	 * Trigger an event upon replying to a topic.
+	 *
+	 * @param TopicInterface $topic the topic being viewed.
+	 * @param mixed $user the user viewing the event.
+	 * @param string $eventName the event name.
+	 */
+	public function replyToTopic(TopicInterface $topic, PostInterface $post, $user, $eventName = RhapsodySocialEvents::REPLY_TO_TOPIC)
+	{
+		$topicEventBuilder = TopicEventBuilder::create()
+			->setTopic($topic)
+			->setPost($post)
+			->setUser($post->author);
+		$event = $topicEventBuilder->build();
+		$this->eventDispatcher->dispatch($eventName, $event);
 	}
 
 	/**

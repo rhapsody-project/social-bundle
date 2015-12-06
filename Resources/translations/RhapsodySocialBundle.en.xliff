@@ -10,6 +10,10 @@
         <source>rhapsody.social.misc.stream</source>
         <target>stream</target>
       </trans-unit>
+      <trans-unit id="rhapsody.social.post.created">
+        <source>rhapsody.social.post.created</source>
+        <target>New post successfully created!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

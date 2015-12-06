@@ -1,6 +1,6 @@
 a.subtle, a.subtle:hover { color: inherit; text-decoration: none; cursor: pointer; }
 
-.activity { margin: 15px 0px; padding: 15px; }
+.activity { font-size: 0.95em; margin: 15px 0px; padding: 15px; }
 .activity-box { background-color: #fff; border: 1px solid #ccc; }
 
 .activity-header { margin-bottom: 10px; }

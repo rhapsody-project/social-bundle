@@ -148,6 +148,18 @@ class TopicRepository extends DocumentRepository implements TopicRepositoryInter
 
 	/**
 	 * (non-PHPDoc)
+	 * @see \Rhapsody\SocialBundle\Repository\PostRepositoryInterface::findAllByTopic()
+	 */
+	public function getTopicCountBySocialContext($topic)
+	{
+		$qb = $this->createQueryBuilder()
+			->field('socialContext.$id')->equals(new \MongoId($topic->getId()));
+		$query = $qb->getQuery();
+		return $query->count();
+	}
+
+	/**
+	 * (non-PHPDoc)
 	 * @see \Rhapsody\SocialBundle\Repository\TopicRepositoryInterface::incrementTopicNumViews()
 	 */
 	public function incrementTopicNumViews($topic)
@@ -158,10 +170,10 @@ class TopicRepository extends DocumentRepository implements TopicRepositoryInter
 		);
 
 		// ** Perform increment update statement against the tuple.
-		$this->getDocumentManager()
-				->getDocumentCollection($this->getDocumentName())
-				->getMongoCollection()
-				->update($filter, $expr);
+		$dm = $this->getDocumentManager();
+		$dc = $dm->getDocumentCollection($this->getDocumentName());
+		$collection = $dc->getMongoCollection();
+		$collection->update($filter, $expr);
 	}
 
  	public function updatePostCount($topic, $posts)

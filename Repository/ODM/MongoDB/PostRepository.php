@@ -94,6 +94,14 @@ class PostRepository extends DocumentRepository implements PostRepositoryInterfa
 
 	/**
 	 * (non-PHPDoc)
+	 * @see \Rhapsody\SocialBundle\Repository\PostRepositoryInterface::findOneById()
+	 */
+	public function getPostBefore($post)
+	{
+	}
+
+	/**
+	 * (non-PHPDoc)
 	 * @see \Rhapsody\SocialBundle\Repository\PostRepositoryInterface::findAllByTopic()
 	 */
 	public function getPostCountByTopic($topic)
@@ -116,14 +124,6 @@ class PostRepository extends DocumentRepository implements PostRepositoryInterfa
 				->sort('created', 'ASC');
 		$query = $qb->getQuery();
 		return array_values($query->execute()->toArray());
-	}
-
-	/**
-	 * (non-PHPDoc)
-	 * @see \Rhapsody\SocialBundle\Repository\PostRepositoryInterface::findOneById()
-	 */
-	public function getPostBefore($post)
-	{
 	}
 
 	/**

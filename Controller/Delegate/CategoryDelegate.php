@@ -65,13 +65,13 @@ class CategoryDelegate extends Delegate
 		return $this->createResponseBuilder($view);
 	}
 
-	public function showAction(Request $request, ForumInterface $forum)
+	public function viewAction(Request $request, ForumInterface $forum)
 	{
 		$page  = $request->query->get('page', 1);
 
 		$view = View::create(array('category' => $category, 'page' => $page))
 			->setFormat($request->getRequestFormat('html'))
-			->setTemplate('RhapsodyForumBundle:Category:show.html.twig');
+			->setTemplate('RhapsodyForumBundle:Category:view.html.twig');
 		return $this->createResponseBuilder($view);
 	}
 

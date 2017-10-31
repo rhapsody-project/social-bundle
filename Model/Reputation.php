@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -34,7 +34,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author    Sean W. Quinn <sean.quinn@extesla.com>
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0

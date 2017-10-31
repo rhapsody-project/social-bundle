@@ -1,0 +1,26 @@
+framework:
+    secret: test
+    router: { resource: "%kernel.root_dir%/config/tests/%kernel.test_case%/routing.yml" }
+    validation: { enabled: true, enable_annotations: true }
+    csrf_protection: true
+    form: true
+    test: ~
+    default_locale: en
+    session:
+        storage_id: session.storage.mock_file
+        
+security:
+    encoders:
+        Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Document\User: plaintext
+        Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Entity\User: plaintext
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin:  { password: "admin", roles: ["ROLE_ADMIN"] }
+    firewalls:
+        default:
+            anonymous: ~
+
+services:
+    logger: { class: Psr\Log\NullLogger }

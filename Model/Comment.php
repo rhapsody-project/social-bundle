@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,114 +27,164 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  *
- * @author    Sean.Quinn
+ * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
-class Comment implements CommentInterface, EndorsementAwareInterface
+abstract class Comment implements CommentInterface, EndorsableInterface
 {
 
-	/**
-	 * The object identifier.
-	 * @var number
-	 * @access protected
-	 */
-	protected $id;
+    /**
+     * The object identifier.
+     * @var number
+     */
+    protected $id;
 
-	/**
-	 * The date that this activity was posted.
-	 * @var \DateTime
-	 * @access protected
-	 */
-	protected $date;
+    /**
+     * The date that this comment was posted.
+     * @var \DateTime
+     */
+    protected $created;
 
-	/**
-	 * Colleciton of endorsements, e.g. likes, that this activity has received.
-	 * @var array
-	 * @access protected
-	 */
-	protected $endorsements = array();
+    /**
+     * The number of endorsements that this comment has.
+     * @var int
+     */
+    protected $endorsementCount = 0;
 
-	/**
-	 * The text content of the activity.
-	 * @var string
-	 * @access protected
-	 */
-	protected $text;
+    /**
+     * The owner of this comment.
+     * @var CommentableInterface
+     */
+    protected $parent;
 
-	/**
-	 * The user whom this activity is associated with.
-	 * @var mixed
-	 * @access protected
-	 */
-	protected $user;
+    /**
+     * The text of the comment.
+     * @var string
+     */
+    protected $text;
 
-	public function __construct()
-	{
-		$this->date = new \DateTime();
-	}
+    /**
+     * The user who posted this comment.
+     * @var UserInterface
+     */
+    protected $user;
 
-	public function getDate()
-	{
-		return $this->date;
-	}
+    public function __construct()
+    {
+        $this->created = new \DateTime();
+    }
 
-	/**
-	 * (non-PHPDoc)
-	 * @see \Rhapsody\SocialBundle\Model\EndorsementAwareInterface::getSocialContext()
-	 */
-	public function getEndorsements()
-	{
-		return $this->endorsements;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentInterface::getCreated()
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
 
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentInterface::getEndorsementCount()
+     */
+    public function getEndorsementCount()
+    {
+        return $this->endorsementCount;
+    }
 
-	public function getText()
-	{
-		return $this->text;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentInterface::getId()
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 *
-	 * @return mixed
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+    public function getParent()
+    {
+        return $this->parent;
+    }
 
-	public function setDate($date)
-	{
-		$this->date = $date;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentInterface::getText()
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
 
-	public function setEndorsements($endorsements)
-	{
-		$this->endorsements = $endorsements;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentInterface::getUser()
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
+    /**
+     * Set the created date of the comment.
+     *
+     * @param \DateTime $date the date the comment was created.
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+    }
 
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
+    /**
+     * Set the endorsement count of the comment.
+     *
+     * @param int $endorsementCount count of endorsements.
+     */
+    public function setEndorsementCount($endorsementCount)
+    {
+        $this->endorsementCount = $endorsementCount;
+    }
 
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
+    /**
+     * Set the object ID of the comment.
+     *
+     * @param mixed $id the comment's ID.
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function setParent(CommentableInterface $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * Set the text of the comment.
+     *
+     * @param string $text the comment's text.
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * Set the user who authored and owns the comment.
+     *
+     * @param UserInterface $user the user who authored the comment.
+     */
+    public function setUser(UserInterface $user)
+    {
+        $this->user = $user;
+    }
 }

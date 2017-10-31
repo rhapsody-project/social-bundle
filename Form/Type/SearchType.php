@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,15 +28,17 @@
 namespace Rhapsody\SocialBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  *
  * @author    Sean W. Quinn
- * @category  Rhapsody ForumBundle
- * @package   Rhapsody\ForumBundle\Form\Type
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Form\Type
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -51,7 +53,7 @@ class SearchType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		parent::buildForm($builder, $options);
-		$builder->add('query', 'text');
+		$builder->add('query', TextType::class);
 	}
 
 	public function getName()
@@ -59,11 +61,17 @@ class SearchType extends AbstractType
 		return 'rhapsody_forum_form_type_search';
 	}
 
+	// BC for Symfony Framework < 2.7
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	{
+		$this->configureOptions($resolver);
+	}
+
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		return array(
 				'csrf_protection'   => false,
-				'data_class'        => 'Rhapsody\ForumBundle\Model\Search',
+				'data_class'        => 'Rhapsody\SocialBundle\Model\Search',
 		);
 	}
 }

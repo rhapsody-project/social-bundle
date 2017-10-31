@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,7 +28,7 @@
 namespace Rhapsody\SocialBundle\Controller\Delegate;
 
 use FOS\RestBundle\View\View;
-use JMS\Serializer\SerializationContext;
+use Rhapsody\RestBundle\Factory\ContextFactory;
 use Rhapsody\RestBundle\HttpFoundation\Controller\Delegate;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Controller\Delegate
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -46,29 +46,72 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class ActivityDelegate extends Delegate
 {
 
-	/**
-	 *
-	 * @param Request $request
-	 * @param UserInterface $user
-	 * @param unknown $date
-	 * @param number $limit
-	 * @return \Rhapsody\ComponentExtensionBundle\HttpFoundation\Controller\ResponseBuilderInterface
-	 */
-	public function listAction(Request $request, UserInterface $user, $date = null, $limit = 50)
-	{
-		/** @var $activityManager \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface */
-		$activityManager = $this->get('rhapsody.social.doctrine.activity_manager');
+    /**
+     *
+     * @param Request $request
+     * @param string $activityId
+     * @return \Rhapsody\ComponentExtensionBundle\HttpFoundation\Controller\ResponseBuilderInterface
+     *     The response builder.
+     */
+    public function getAction(Request $request, $activityId)
+    {
+        /** @var $activityManager \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface */
+        $activityManager = $this->get('rhapsody.social.doctrine.activity_manager');
 
-		/** @var $profileManager \Rhapsody\SocialBundle\Doctrine\ProfileManagerInterface */
-		$profileManager = $this->get('rhapsody.social.doctrine.profile_manager');
+        $activity = $activityManager->findActivityById($activityId);
+        $view = View::create()
+            ->setData(array('socialActivity' => $activity))
+            ->setFormat($this->getFormat('html'))
+            ->setTemplate('RhapsodySocialBundle:Activity:view.html.twig');
+        return $this->createResponseBuilder($view);
+    }
 
-		$sources = $profileManager->findSourcesFollowedByUser($user);
-		$activities = $activityManager->findActivityBySource($sources, $date, $limit);
-		$view = View::create()
-			->setData(array('activities' => $activities))
-			->setFormat($request->getRequestFormat('html'))
-			->setSerializationContext(SerializationContext::create()->setGroups('context'))
-			->setTemplate('RhapsodySocialBundle:Activity:list.html.twig');
-		return $this->createResponseBuilder($view);
-	}
+    /**
+     * Returns a response containing a collection of a <code>$user</code>'s
+     * activities.
+     *
+     * @param Request $request
+     * @param UserInterface $user
+     * @param unknown $date
+     * @param number $limit
+     * @return \Rhapsody\ComponentExtensionBundle\HttpFoundation\Controller\ResponseBuilderInterface
+     */
+    public function listActivityForUserAction(Request $request, UserInterface $user, $date = null, $limit = 50)
+    {
+        /** @var $activityManager \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface */
+        $activityManager = $this->get('rhapsody.social.doctrine.activity_manager');
+
+        /** @var $profileManager \Rhapsody\SocialBundle\Doctrine\ProfileManagerInterface */
+        $profileManager = $this->get('rhapsody.social.doctrine.profile_manager');
+
+        $sources = $profileManager->findSourcesFollowedByUser($user);
+        $activities = $activityManager->findActivityBySource($sources, $date, $limit);
+
+        $view = View::create()
+            ->setData(array('socialActivities' => $activities))
+            ->setFormat($this->getFormat('html'))
+            ->setContext(ContextFactory::create(array('list')))
+            ->setTemplate('RhapsodySocialBundle:Activity:list.html.twig');
+        return $this->createResponseBuilder($view);
+    }
+
+    public function newAction(Request $request, UserInterface $user)
+    {
+        /** @var $activityManager \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface */
+        $activityManager = $this->get('rhapsody.social.doctrine.activity_manager');
+
+        /** @var $formFactory \Rhapsody\SocialBundle\Form\Factory\FactoryInterface */
+        $formFactory = $this->get('rhapsody_social.activity.form.factory');
+
+        /** @var $category \Rhapsody\SocialBundle\Model\TopicInterface */
+        $activity = $activityManager->newActivity($user);
+        $form = $formFactory->createForm();
+        $form->setData($activity);
+
+        $view = View::create(array('form' => $form->createView()))
+            ->setFormat($this->getFormat('html'))
+            ->setContext(ContextFactory::create(array('all')))
+            ->setTemplate('RhapsodySocialBundle:Activity:new.html.twig');
+        return $this->createResponseBuilder($view);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,38 +27,60 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  *
- * @author Sean.Quinn
+ * @author    Sean W. Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
 interface CommentInterface
 {
 
-	/**
-	 *
-	 */
-	function getDate();
+    /**
+     * Return when that this comment was created.
+     *
+     * @return \DateTime when this comment was created.
+     */
+    function getCreated();
 
-	/**
-	 *
-	 */
-	function getEndorsements();
+    /**
+     * Return the number of endorsements for this comment.
+     *
+     * @return int the number of endorsements for this comment.
+     */
+    function getEndorsementCount();
 
-	/**
-	 * Returns the object identifier.
-	 *
-	 * @return number the object identifier.
-	 */
-	function getId();
+    /**
+     * Returns the object identifier.
+     *
+     * @return number the object identifier.
+     */
+    function getId();
 
-	/**
-	 *
-	 */
-	function getText();
+    /**
+     * Return this comment's parent.
+     *
+     * @return CommentableInterface the comment's parent.
+     */
+    function getParent();
 
-	/**
-	 *
-	 * @return mixed
-	 */
-	function getUser();
+    /**
+     * Return the text for this comment.
+     *
+     * @return string the text for this comment.
+     */
+    function getText();
+
+    /**
+     * Return the user who authored the comment.
+     *
+     * @return UserInterface the user who authored the comment.
+     */
+    function getUser();
 }

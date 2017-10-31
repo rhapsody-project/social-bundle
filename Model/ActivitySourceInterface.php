@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -35,7 +35,7 @@ namespace Rhapsody\SocialBundle\Model;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -43,4 +43,10 @@ namespace Rhapsody\SocialBundle\Model;
 interface ActivitySourceInterface
 {
 
+    /**
+     * Return the activity source's ID.
+     *
+     * @return mixed the activity source's ID.
+     */
+    function getId();
 }

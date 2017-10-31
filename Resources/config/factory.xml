@@ -18,7 +18,7 @@
       <service id="rhapsody.social.factory.activity_builder_factory" class="%rhapsody.social.factory.activity_builder_factory.class%">
         <tag name="rhapsody_fourm.factory" />
         <argument type="service" id="security.authorization_checker" />
-        <argument type="service" id="rhapsody.forum.validator.post.constraint_validator" />
+        <argument type="service" id="rhapsody.social.validator.activity.constraint_validator" />
         <argument>%rhapsody_social.model.activity.class%</argument>
       </service>
 

@@ -1,4 +1,4 @@
-{# Copyright (c) 2015 Rhapsody Project
+{# Copyright (c) Rhapsody Project
  #
  # Licensed under the MIT License (http://opensource.org/licenses/MIT)
  #
@@ -24,13 +24,13 @@
  # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  #}
-{% trans_default_domain "RhapsodyForumBundle" %}
+{% trans_default_domain "RhapsodySocialBundle" %}
 
-{% set author    = activity.author %}
-{% set source    = activity.source %}
-{% set timestamp = activity.date is empty ? '' : activity.date.getTimestamp() %}
+{% set author    = socialActivity.author %}
+{% set source    = socialActivity.source %}
+{% set timestamp = socialActivity.date is empty ? '' : socialActivity.date.getTimestamp() %}
 
-<article id="activity-{{ activity.id }}" data-activity-id="{{ activity.id }}" data-user-id="{{ author.id|default('unknown-user') }}" class="activity activity-box">
+<article id="activity-{{ socialActivity.id }}" data-activity-id="{{ socialActivity.id }}" data-user-id="{{ author.id|default('unknown-user') }}" class="activity activity-box">
 
 	<div class="row activity-header">
 		<div>
@@ -47,7 +47,7 @@
 			{% endif %}
 
 			{# SOURCE:
-			 #   The source of the activity. If the activity is sourced from
+			 #   The source of the socialActivity. If the activity is sourced from
 			 #   another activity or piece of media, this is where we give
 			 #   attribution to the source.
 			 #}
@@ -64,14 +64,14 @@
 		</div>
 	</div>
 
-	{% if (activity.text is not empty) or (activity.content is not empty) %}
+	{% if (socialActivity.text is not empty) or (socialActivity.content is not empty) %}
 	<div class="row">
 		<div class="activity-text">
-			{{ activity.text|raw|markdown }}
+			{{ socialActivity.text|raw|markdown }}
 		</div>
-		{% if activity.content is not empty %}
-		<div class="well" data-share-type="{{ rhapsody_social_get_share_type(activity.content) }}" data-share-id="{{ activity.content.id }}">
-			{{ render_shared_media(activity.content) }}
+		{% if socialActivity.content is not empty %}
+		<div class="well" data-share-type="{{ rhapsody_social_get_share_type(socialActivity.content) }}" data-share-id="{{ socialActivity.content.id }}">
+			{{ render_shared_media(socialActivity.content) }}
 		</div>
 		{% endif %}
 	</div>
@@ -81,21 +81,21 @@
 	<div class="row activity-actions">
 		<nav class="navbar navbar-default">
 			<ul class="nav navbar-nav">
-				{% if rhapsody_social_config('rhapsody_social.activity.allow_comment') == true %}
+				{% if rhapsody_social_config('rhapsody_social.socialActivity.allow_comment') == true %}
 				<li>
 					<a href="">
 						<span class="glyphicons glyphicons-share"></span> Reply
 					</a>
 				</li>
 				{% endif %}
-				{% if rhapsody_social_config('rhapsody_social.activity.allow_endorsement') == true %}
+				{% if rhapsody_social_config('rhapsody_social.socialActivity.allow_endorsement') == true %}
 				<li>
 					<a href="">
 						<span class="glyphicons glyphicons-heart"></span> Endorse
 					</a>
 				</li>
 				{% endif %}
-				{% if rhapsody_social_config('rhapsody_social.activity.allow_share') == true %}
+				{% if rhapsody_social_config('rhapsody_social.socialActivity.allow_share') == true %}
 				<li>
 					<a href="">
 						<span class="glyphicons glyphicons-retweet"></span> Share
@@ -106,23 +106,23 @@
 		</nav>
 	</div>
 	{% endif %}
-	{% if rhapsody_social_config('rhapsody_social.activity.allow_comment') == true %}
+	{% if rhapsody_social_config('rhapsody_social.socialActivity.allow_comment') == true %}
 	<div class="row activity-comments">
-		{% set hide_comments = activity.comments|length > 5 %}
+		{% set hide_comments = socialActivity.comments|length > 5 %}
 		{% set threshold = hide_comments ? -2 : 0 %}
 
 		{% if hide_comments == true %}
-		{% set hidden_comments = activity.comments|slice(0, threshold)|length %}
+		{% set hidden_comments = socialActivity.comments|slice(0, threshold)|length %}
 		<div class="show-more-comments btn-link">View {{ hidden_comments }} previous comments</div>
 		<div class="more-comments">
-			{% for comment in activity.comments|slice(0, threshold) %}
+			{% for comment in socialActivity.comments|slice(0, threshold) %}
 				{% include 'RhapsodySocialBundle:Activity:comment.html.twig' with { 'comment': comment } only %}
 			{% endfor %}
 		</div>
 		{% endif %}
 
 		<div class="recent-comments">
-			{% for comment in activity.comments|slice(threshold, null) %}
+			{% for comment in socialActivity.comments|slice(threshold, null) %}
 				{% include 'RhapsodySocialBundle:Activity:comment.html.twig' with { 'comment': comment } only %}
 			{% endfor %}
 		</div>

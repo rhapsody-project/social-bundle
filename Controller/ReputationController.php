@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -34,6 +34,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * @author Sean.Quinn
  * @since 1.0
  */
-class AchievementsController extends Controller
+class ReputationController extends Controller
 {
 }

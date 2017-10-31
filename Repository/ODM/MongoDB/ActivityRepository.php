@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,62 +27,122 @@
  */
 namespace Rhapsody\SocialBundle\Repository\ODM\MongoDB;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ODM\MongoDB\DocumentRepository;
+use Rhapsody\SocialBundle\Model\ActivitySourceInterface;
 use Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  *
  * @author    Sean W. Quinn
- * @category  Rhapsody ForumBundle
- * @package   Rhapsody\ForumBundle\Repository\ODM\MongoDB
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Repository\ODM\MongoDB
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
 class ActivityRepository extends DocumentRepository implements ActivityRepositoryInterface
 {
-	/**
-	 * (non-PHPDoc)
-	 * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findAllBySource()
-	 */
-	public function findAllBySource($sources = array(), $date = null, $limit = 50)
-	{
-		$qb = $this->createQueryBuilder()->limit($limit)->sort('date', 'DESC');
 
-		// ** Apply date filter.
-		if (!empty($date)) {
-			$qb->field('date')->lte($date);
-		}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findByActivitySource()
+     */
+    public function findByActivitySource(ActivitySourceInterface $activitySource, $limit = null, $offset = 0)
+    {
+        $sourceId = $this->getReferenceForActivitySource($activitySource);
 
-		// ** Apply source filters.
-		$qb->addOr($qb->expr()->field('source')->exists(false));
-		foreach ($sources as $source) {
-			$expr = $qb->expr() //->field('source')->equals($source);
-				->field('source.$id')->equals(new \MongoId($source->getId()))
-				->field('source._doctrine_class_name')->equals(get_class($source));
-			$qb->addOr($expr);
-		}
-		$query = $qb->getQuery();
-		return array_values($query->execute()->toArray());
-	}
+        $qb = $this->createQueryBuilder()
+            ->field('source.$id')->equals($sourceId)
+            ->field('source._doctrine_class_name')->equals(ClassUtils::getClass($activitySource))
+            ->sort('created', 'DESC')
+        ;
 
-	public function findAllByUserAndDate($user, $date, $limit = 50)
-	{
-		$qb = $this->createQueryBuilder()
-			->field('source')->equals($user)
-			->limit($limit)
-			->sort('date', 'DESC');
-		$query = $qb->getQuery();
-		return array_values($query->execute()->toArray());
-	}
+        if (null !== $limit) {
+            $qb->limit($limit);
+        }
+        if ($offset > 0) {
+            $qb->skip($offset);
+        }
 
-	/**
-	 * (non-PHPDoc)
-	 * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findOneById()
-	 */
-	public function findOneById($id)
-	{
-		return $this->find($id);
-	}
+        $query = $qb->getQuery();
+        $results = $query->execute()->toArray();
+        return array_values($results);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findByUserAndDate()
+     */
+    public function findByUserAndDate($user, \DateTime $start = null, \DateTime $end = null, $limit = null, $offset = 0)
+    {
+        $qb = $this->createQueryBuilder()->sort('created', 'desc');
+        $qb->addAnd($qb->expr()->field('created')->gte($start));
+        $qb->addAnd($qb->expr()->field('created')->lte($end));
+
+        if (null !== $limit) {
+            $qb->limit($limit);
+        }
+        if ($offset > 0) {
+            $qb->skip($offset);
+        }
+
+        $query = $qb->getQuery();
+        $results = $query->execute()->toArray();
+        return array_values($results);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findByUser()
+     */
+    public function findByUser($user, $limit = null, $offset = 0)
+    {
+        $userId = $this->getReferenceForUser($user);
+
+        $qb = $this->createQueryBuilder()
+            ->field('user.$id')->equals($userId)
+            ->sort('created', 'DESC')
+        ;
+
+        if (null !== $limit) {
+            $qb->limit($limit);
+        }
+        if ($offset > 0) {
+            $qb->skip($offset);
+        }
+
+        $query = $qb->getQuery();
+        $results = $query->execute()->toArray();
+        return array_values($results);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Repository\ActivityRepositoryInterface::findOneById()
+     */
+    public function findOneById($id)
+    {
+        return $this->findOneBy(array(
+            'id' => new \MongoId($id)
+        ));
+    }
+
+    private function getReferenceForActivitySource($activitySource)
+    {
+        if ($activitySource instanceof ActivitySourceInterface) {
+            return new \MongoId($activitySource->getId());
+        }
+        return new \MongoId($activitySource);
+    }
+
+    private function getReferenceForUser($user)
+    {
+        if ($user instanceof UserInterface) {
+            return new \MongoId($user->getId());
+        }
+        return new \MongoId($user);
+    }
 }

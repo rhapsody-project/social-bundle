@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+  <parameters>
+    <parameter key="rhapsody.social.doctrine.activity_manager.class">Rhapsody\SocialBundle\Doctrine\ORM\ActivityManager</parameter>
+    <parameter key="rhapsody.social.doctrine.affiliation_manager.class">Rhapsody\SocialBundle\Doctrine\ORM\AffiliationManager</parameter>
+    <parameter key="rhapsody.social.doctrine.profile_manager.class">Rhapsody\SocialBundle\Doctrine\ORM\ProfileManager</parameter>
+  </parameters>
+  <services>
+
+    <service id="rhapsody.social.doctrine.entity_manager" class="Doctrine\ORM\EntityManager" public="false">
+      <factory service="doctrine" method="getManager" />
+    </service>
+
+    <service id="rhapsody.social.doctrine.activity_manager" class="%rhapsody.social.doctrine.activity_manager.class%">
+      <argument type="service" id="rhapsody.social.doctrine.entity_manager" />
+      <argument type="service" id="event_dispatcher" />
+      <argument type="service" id="rhapsody.social.factory.activity_builder_factory" />
+      <argument>%rhapsody_social.model.activity.class%</argument>
+    </service>
+
+    <service id="rhapsody.social.doctrine.profile_manager" class="%rhapsody.social.doctrine.profile_manager.class%">
+      <argument type="service" id="rhapsody.social.doctrine.entity_manager" />
+      <argument type="service" id="event_dispatcher" />
+      <!-- <argument type="service" id="rhapsody.social.factory.profile_builder_factory" /> -->
+      <argument>%rhapsody_social.model.profile.class%</argument>
+    </service>
+
+  </services>
+</container>

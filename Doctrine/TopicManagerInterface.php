@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,6 +28,7 @@
 namespace Rhapsody\SocialBundle\Doctrine;
 
 use Rhapsody\SocialBundle\Model\PostInterface;
+use Rhapsody\SocialBundle\Model\SocialContextInterface;
 use Rhapsody\SocialBundle\Model\TopicInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,7 +37,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Doctrine
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -44,20 +45,59 @@ use Symfony\Component\Security\Core\User\UserInterface;
 interface TopicManagerInterface
 {
 
-	function createTopic(TopicInterface $topic, PostInterface $post, $user);
+    /**
+     *
+     * @param SocialContextInterface $socialContext
+     */
+    function countTopics(SocialContextInterface $socialContext);
 
-	function getFormFactory();
+    function createTopic(TopicInterface $topic, PostInterface $post, $user);
 
-	function markTopicAsViewed(TopicInterface $topic, UserInterface $user);
+    /**
+     *
+     * @param SocialContextInterface $socialContext
+     */
+    function findAll(SocialContextInterface $socialContext);
 
-	function update(TopicInterface $forum, $andFlush = true);
+    /**
+     *
+     * @param SocialContextInterface $socialContext
+     * @param mixed $category
+     */
+    function findAllByCategory(SocialContextInterface $socialContext, $category);
 
-	/**
-	 * Trigger an event upon viewing a topic.
-	 *
-	 * @param TopicInterface $topic the topic being viewed.
-	 * @param mixed $user the user viewing the event.
-	 * @param string $eventName the event name.
-	 */
-	function viewTopic(TopicInterface $topic, $user, $eventName);
+    /**
+     *
+     * @param SocialContextInterface $socialContext
+     * @param number $limit
+     * @param number $offset
+     */
+    function findBy(SocialContextInterface $socialContext, $limit = null, $offset = 0);
+
+    /**
+     *
+     * @param mixed $id
+     */
+    function findById($id);
+
+    /**
+     *
+     * @param string $slug
+     */
+    function findBySlug($slug);
+
+    function getFormFactory();
+
+    function markTopicAsViewed(TopicInterface $topic, UserInterface $user);
+
+    function update(TopicInterface $forum, $andFlush = true);
+
+    /**
+     * Trigger an event upon viewing a topic.
+     *
+     * @param TopicInterface $topic the topic being viewed.
+     * @param mixed $user the user viewing the event.
+     * @param string $eventName the event name.
+     */
+    function viewTopic(TopicInterface $topic, $user, $eventName);
 }

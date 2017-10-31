@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,17 +27,18 @@
  */
 namespace Rhapsody\SocialBundle;
 
+use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass;
 use Rhapsody\SocialBundle\DependencyInjection\Compiler\ActivityTemplateCompilerPass;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Bundle\SecurityBundle\DependencyInjection\Compiler\AddSecurityVotersPass;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  *
- * @author 	  Sean W. Quinn
+ * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -45,11 +46,32 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Compiler\AddSecurityVoters
 class RhapsodySocialBundle extends Bundle
 {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function build(ContainerBuilder $container)
-	{
-		$container->addCompilerPass(new ActivityTemplateCompilerPass());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+        $container->addCompilerPass(new ActivityTemplateCompilerPass());
+
+        $this->addRegisterMappingsPass($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function addRegisterMappingsPass(ContainerBuilder $container)
+    {
+        $mappings = array(
+            realpath(__DIR__.'/Resources/config/doctrine-mapping') => 'Rhapsody\SocialBundle\Model',
+        );
+
+        if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
+            $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, [], 'rhapsody_social.has_backend_orm'));
+        }
+
+        if (class_exists('Doctrine\Bundle\MongoDBBundle\DependencyInjection\Compiler\DoctrineMongoDBMappingsPass')) {
+            $container->addCompilerPass(DoctrineMongoDBMappingsPass::createXmlMappingDriver($mappings, [], 'rhapsody_social.has_backend_mongodb'));
+        }
+    }
 }

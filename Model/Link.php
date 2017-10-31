@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,39 +27,147 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
-class Link implements ShareableInterface
+/**
+ * A <code>Link</code> is a type of content that is independent of any social
+ * context.
+ *
+ * @author    Sean Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
+ */
+abstract class Link extends Content implements LinkInterface
 {
-	/**
-	 *
-	 * @var string
-	 */
-	protected $url;
+    /**
+     * The ID of this link.
+     * @var mixed
+     */
+    protected $id;
 
-	/**
-	 * Collection of preview images. If empty, no images are attached to the
-	 * URL content.
-	 * @var array
-	 */
-	protected $preview = array();
+    /**
+     * The URL to the content being represented by this link.
+     * @var string
+     */
+    protected $url;
 
-	/**
-	 * Summary text, usually taken from the description of the URL.
-	 * @var string
-	 */
-	protected $summary;
+    /**
+     * Collection of preview images. If empty, no images are attached to the
+     * URL content. If there is more than one image, it is up to the client
+     * to decide how to represent them. Not all clients will support showing
+     * more than one preview image.
+     * @var array
+     */
+    protected $previewImages = array();
 
-	public function getPreview()
-	{
-		return $this->preview;
-	}
+    /**
+     * Summary text, usually taken from the description of the URL.
+     * @var string
+     */
+    protected $summary;
 
-	public function getSummary()
-	{
-		return $this->summary;
-	}
+    /**
+     * The type of the link; taxonomy that can be used to distinguish between
+     * links to external content (e.g. Facebook posts, tweets on Twitter, etc.)
+     * or media (e.g. videos, images, etc.).
+     * @var string
+     */
+    protected $type;
 
-	public function getUrl()
-	{
-		return $this->url;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\LinkInterface::getId()
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\LinkInterface::getPreviewImages()
+     */
+    public function getPreviewImages()
+    {
+        return $this->previewImages;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\LinkInterface::getSummary()
+     */
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\LinkInterface::getType()
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\LinkInterface::getUrl()
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set the link's ID.
+     *
+     * @param mixed $id the link's ID.
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Set the preview images for the link.
+     *
+     * @param array $previewImages the preview images for the link.
+     */
+    public function setPreviewImages(array $previewImages = array())
+    {
+        $this->previewImages = $previewImages;
+    }
+
+    /**
+     * Set the link's summary.
+     *
+     * @param string $summary the summary.
+     */
+    public function setSummary($summary)
+    {
+        $this->summary = $summary;
+    }
+
+    /**
+     * Set the link's type.
+     *
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * Set the link's URL
+     *
+     * @param strin $url the URL.
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
 }

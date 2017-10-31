@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -29,19 +29,16 @@ namespace Rhapsody\SocialBundle\Controller\Delegate;
 
 use FOS\RestBundle\View\View;
 use JMS\Serializer\SerializationContext;
-use Rhapsody\ForumBundle\Form\Type\SearchType;
 use Rhapsody\RestBundle\HttpFoundation\Controller\Delegate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  *
  * @author    Sean W. Quinn
- * @category  Rhapsody ForumBundle
- * @package   Rhapsody\ForumBundle\Controller\Delegate
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Controller\Delegate
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -60,8 +57,8 @@ class CategoryDelegate extends Delegate
 
 		$view = View::create(array('categories' => $categories))
 			->setFormat($request->getRequestFormat('html'))
-			->setSerializationContext(SerializationContext::create()->setGroups('context'))
-			->setTemplate('RhapsodyForumBundle:Category:list.html.twig');
+			->setSerializationContext(SerializationContext::create()->setGroups('list'))
+			->setTemplate('RhapsodySocialBundle:Category:list.html.twig');
 		return $this->createResponseBuilder($view);
 	}
 
@@ -71,7 +68,7 @@ class CategoryDelegate extends Delegate
 
 		$view = View::create(array('category' => $category, 'page' => $page))
 			->setFormat($request->getRequestFormat('html'))
-			->setTemplate('RhapsodyForumBundle:Category:view.html.twig');
+			->setTemplate('RhapsodySocialBundle:Category:view.html.twig');
 		return $this->createResponseBuilder($view);
 	}
 

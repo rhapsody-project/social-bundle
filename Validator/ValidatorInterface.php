@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -32,7 +32,7 @@ namespace Rhapsody\SocialBundle\Validator;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Validator
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -40,9 +40,10 @@ namespace Rhapsody\SocialBundle\Validator;
 interface ValidatorInterface
 {
 
-  /**
-   * @return boolean <tt>true</tt> if the validation of the <tt>$object</tt>
-   *    passes; otherwise <tt>false</tt>.
-   */
-  function validate($object);
+    /**
+     *
+     * @return boolean <tt>true</tt> if the validation of the <tt>$object</tt>
+     *     passes; otherwise <tt>false</tt>.
+     */
+    function validate($object);
 }

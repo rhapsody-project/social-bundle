@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,7 +28,9 @@
 namespace Rhapsody\SocialBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -36,7 +38,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Form\Type
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -60,7 +62,7 @@ class PostType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		parent::buildForm($builder, $options);
-		$builder->add('text', 'textarea');
+		$builder->add('text', TextareaType::class);
 	}
 
 	public function getName()
@@ -68,12 +70,20 @@ class PostType extends AbstractType
 		return 'rhapsody_forum_form_type_post';
 	}
 
+	// BC for Symfony Framework < 2.7
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
 	{
+		$this->configureOptions($resolver);
+	}
+
+	public function configureOptions(OptionsResolver $resolver)
+	{
 		$resolver->setDefaults(array(
-				'csrf_protection' => true,
-				'data_class' => $this->class,
-				'intention' => 'post'
+			'csrf_protection' => true,
+			'data_class' => $this->class,
+			'csrf_token_id'     => 'post',
+			// BC for Symfony Framework < 2.8
+			'intention'         => 'post'
 		));
 	}
 }

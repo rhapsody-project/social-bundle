@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -35,13 +35,14 @@ use Rhapsody\SocialBundle\Mailer\MailerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Rhapsody\SocialBundle\Doctrine\PostManagerInterface;
 
 /**
  *
  * @author    Sean.Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\EventListener
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -49,126 +50,144 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class PostSubscriber implements EventSubscriberInterface
 {
 
-	private $mailer;
-	private $router;
-	private $session;
-	private $auditManager;
+    private $mailer;
+    private $router;
+    private $session;
+    private $auditManager;
 
-	/**
-	 * The {@link TemplateFactory}.
-	 * @var \Rhapsody\SocialBundle\Factory\TemplateFactoryInterface
-	 */
-	private $templateFactory;
+    /**
+     * The {@link TemplateFactory}.
+     * @var \Rhapsody\SocialBundle\Factory\TemplateFactoryInterface
+     */
+    private $templateFactory;
 
-	/**
-	 * The {@link TopicManager}.
-	 * @var \Rhapsody\SocialBundle\Doctrine\TopicManagerInterface
-	 */
-	private $topicManager;
+    /**
+     * The {@link PostManager}.
+     * @var \Rhapsody\SocialBundle\Doctrine\PostManagerInterface
+     */
+    private $postManager;
 
-	protected $senderEmail = 'noreply@lorecall.com';
-	protected $senderName = 'Lorecall';
+    /**
+     * The {@link TopicManager}.
+     * @var \Rhapsody\SocialBundle\Doctrine\TopicManagerInterface
+     */
+    private $topicManager;
 
-	/**
-	 *
-	 * @param MailerInterface $mailer
-	 * @param UrlGeneratorInterface $router
-	 * @param SessionInterface $session
-	 */
-	public function __construct(MailerInterface $mailer, UrlGeneratorInterface $router, SessionInterface $session, TopicManagerInterface $topicManager, TemplateFactoryInterface $templateFactory)
-	{
-		$this->mailer = $mailer;
-		$this->router = $router;
-		$this->session = $session;
-		$this->topicManager = $topicManager;
-		$this->templateFactory = $templateFactory;
-	}
+    protected $senderEmail = 'noreply@lorecall.com';
+    protected $senderName = 'Lorecall';
 
-	public static function getSubscribedEvents()
-	{
-		throw new \RuntimeException('The method: getSubscribedEvents must be implemented by a concrete class.');
-	}
+    /**
+     *
+     * @param MailerInterface $mailer
+     * @param UrlGeneratorInterface $router
+     * @param SessionInterface $session
+     */
+    public function __construct(
+            MailerInterface $mailer,
+            UrlGeneratorInterface $router,
+            SessionInterface $session,
+            TemplateFactoryInterface $templateFactory,
+            PostManagerInterface $postManager,
+            TopicManagerInterface $topicManager)
+    {
+        $this->mailer = $mailer;
+        $this->router = $router;
+        $this->session = $session;
+        $this->templateFactory = $templateFactory;
+        $this->postManager = $postManager;
+        $this->topicManager = $topicManager;
+    }
 
-	public function onNewTopic(TopicEventInterface $event)
-	{
-		/** @var $topic \Rhapsody\SocialBundle\Model\TopicInterface */
-		$topic  = $event->getTopic();
+    public static function getSubscribedEvents()
+    {
+        throw new \RuntimeException('The method: getSubscribedEvents must be implemented by a concrete class.');
+    }
 
-		/** @var $author \Symfony\Component\Security\Core\User\UserInterface */
-		$author = $event->getUser();
+    public function onNewTopic(TopicEventInterface $event)
+    {
+        /** @var $topic \Rhapsody\SocialBundle\Model\TopicInterface */
+        $topic  = $event->getTopic();
 
-		/** @var $forum \Rhapsody\SocialBundle\Model\ForumInterface */
-		$forum  = $topic->getForum();
+        /** @var $author \Symfony\Component\Security\Core\User\UserInterface */
+        $author = $event->getUser();
 
-		// 1. Look up users "watching" the forum. (not yet implemented)
-		// 2. Inform all of the watchers, sans author, that a new topic has been created.
-	}
+        /** @var $forum \Rhapsody\SocialBundle\Model\ForumInterface */
+        $forum  = $topic->getForum();
 
-	/**
-	 * Reacts to topic reply events. When a topic is replied to, we want to
-	 * update the counts on the topic as well as send emails notifying the
-	 * thread participants of a new post.
-	 *
-	 * @param TopicEventInterface $event
-	 */
-	public function onReplyToTopic(TopicEventInterface $event)
-	{
-		/** @var $topic \Rhapsody\SocialBundle\Model\TopicInterface */
-		$topic  = $event->getTopic();
+        // 1. Look up users "watching" the forum. (not yet implemented)
+        // 2. Inform all of the watchers, sans author, that a new topic has been created.
+    }
 
-		/** @var $post \Rhapsody\SocialBundle\Model\PostInterface */
-		$post   = $event->getPost();
+    public function onPostEdited(TopicEventInterface $event)
+    {
 
-		/** @var $author \Symfony\Component\Security\Core\User\UserInterface */
-		$author = $event->getUser();
+    }
 
-		// ** Count the number of posts and replies for a given topic.
-		$this->topicManager->updateCounts($topic);
+    /**
+     * Reacts to topic reply events. When a topic is replied to, we want to
+     * update the counts on the topic as well as send emails notifying the
+     * thread participants of a new post.
+     *
+     * @param TopicEventInterface $event
+     */
+    public function onReplyToTopic(TopicEventInterface $event)
+    {
+        /** @var $topic \Rhapsody\SocialBundle\Model\TopicInterface */
+        $topic  = $event->getTopic();
 
-		// ** The URL for viewing the forum post.
-		$url = $this->router->generate('rhapsody_forum_topic_view', array(
-			'topic' => $topic->getId(),
-		), UrlGeneratorInterface::ABSOLUTE_URL);
+        /** @var $post \Rhapsody\SocialBundle\Model\PostInterface */
+        $post   = $event->getPost();
 
-		$users  = $this->topicManager->findUsersByTopic($topic);
-		foreach ($users as $user) {
-			// **
-			// Only send the comment email to people OTHER THAN the person who
-			// actually posted the comment. Why do they need to know they posted
-			// a comment? They already do! They just posted it! [SWQ]
-			if ($user->getId() !== $author->getId()) {
-				/** @var $user \Symfony\Component\Security\Core\User\UserInterface */
-				$email = $user->email;
-				if (!empty($email)) {
-					$data = array(
-						'author' => $author,
-						'topic'  => $topic,
-						'post'   => $post,
-						'url'    => $url,
-						'user'   => $user,
-					);
+        /** @var $author \Symfony\Component\Security\Core\User\UserInterface */
+        $author = $event->getUser();
 
-					/** @var $message \Application\LorecallBundle\Model\Messaging\MessageTemplate */
-					$message = EmailTemplate::newInstance()
-						->setTemplate($this->templateFactory->getTopicReplyEmailTemplate())
-						->setTo($email)
-						->setFrom($this->senderEmail, $this->senderName);
-					$this->mailer->sendMessage($message, $data);
-				}
-			}
-		}
-	}
+        // ** Count the number of posts and replies for a given topic.
+        $this->topicManager->updateCounts($topic);
 
-	/**
-	 * React to topic viewing by updating the view count.
-	 *
-	 * @param TopicEventInterface $event
-	 */
-	public function onViewTopic(TopicEventInterface $event)
-	{
-		$topic = $event->getTopic();
-		$user  = $event->getUser();
+        // ** The URL for viewing the forum post.
+        $url = $this->router->generate('rhapsody_forum_topic_view', array(
+            'topic' => $topic->getId(),
+        ), UrlGeneratorInterface::ABSOLUTE_URL);
 
-		$this->topicManager->markTopicAsViewed($topic, $user);
-	}
+        $users  = $this->topicManager->findUsersByTopic($topic);
+        foreach ($users as $user) {
+            // **
+            // Only send the comment email to people OTHER THAN the person who
+            // actually posted the comment. Why do they need to know they posted
+            // a comment? They already do! They just posted it! [SWQ]
+            if ($user->getId() !== $author->getId()) {
+                /** @var $user \Symfony\Component\Security\Core\User\UserInterface */
+                $email = $user->email;
+                if (!empty($email)) {
+                    $data = array(
+                        'author' => $author,
+                        'topic'  => $topic,
+                        'post'   => $post,
+                        'url'    => $url,
+                        'user'   => $user,
+                    );
+
+                    /** @var $message \Application\LorecallBundle\Model\Messaging\MessageTemplate */
+                    $message = EmailTemplate::newInstance()
+                        ->setTemplate($this->templateFactory->getTopicReplyEmailTemplate())
+                        ->setTo($email)
+                        ->setFrom($this->senderEmail, $this->senderName);
+                    $this->mailer->sendMessage($message, $data);
+                }
+            }
+        }
+    }
+
+    /**
+     * React to topic viewing by updating the view count.
+     *
+     * @param TopicEventInterface $event
+     */
+    public function onViewTopic(TopicEventInterface $event)
+    {
+        $topic = $event->getTopic();
+        $user  = $event->getUser();
+
+        $this->topicManager->markTopicAsViewed($topic, $user);
+    }
 }

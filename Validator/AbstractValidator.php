@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -36,7 +36,7 @@ namespace Rhapsody\SocialBundle\Validator;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Validator
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -44,31 +44,34 @@ namespace Rhapsody\SocialBundle\Validator;
 abstract class AbstractValidator implements ValidatorInterface
 {
 
-  /**
-   * Performs the actual validation.
-   *
-   * @param mixed $object the object to validate.
-   * @return boolean <tt>true</tt> if valid; otherwise <tt>false</tt>.
-   */
-  abstract protected function doValidate($object);
+    /**
+     * Performs the actual validation.
+     *
+     * @param mixed $object the object to validate.
+     * @return boolean <tt>true</tt> if valid; otherwise <tt>false</tt>.
+     */
+    abstract protected function doValidate($object);
 
-  /**
-   * Tests to see if the <tt>$object</tt> is supported by this validator. If it
-   * is, validation continues; if not, an exception is thrown indicating that
-   * an invalid argument was passed to the validator.
-   *
-   * @param mixed $object the object to test for support.
-   * @return boolean <tt>true</tt> if the <tt>$object</tt> is supported.
-   * @throws \InvalidArgumentException if the <tt>$object</tt> is not supported
-   *    by this validator.
-   */
-  abstract protected function isSupported($object);
+    /**
+     * Tests to see if the <tt>$object</tt> is supported by this validator.
+     * If it
+     * is, validation continues; if not, an exception is thrown indicating that
+     * an invalid argument was passed to the validator.
+     *
+     * @param mixed $object the object to test for support.
+     * @return boolean <tt>true</tt> if the <tt>$object</tt> is supported.
+     * @throws \InvalidArgumentException if the <tt>$object</tt> is not
+     *         supported
+     *         by this validator.
+     */
+    abstract protected function isSupported($object);
 
-  public function validate($object)
-  {
-    if ($this->isSupported($object)) {
-      return $this->doValidate($object);
+    public function validate($object)
+    {
+        if ($this->isSupported($object)) {
+            return $this->doValidate($object);
+        }
+        return false;
     }
-    return false;
-  }
+
 }

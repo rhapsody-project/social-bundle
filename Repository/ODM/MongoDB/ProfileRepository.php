@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -33,9 +33,9 @@ use Rhapsody\SocialBundle\Repository\ProfileRepositoryInterface;
 /**
  *
  * @author    Sean W. Quinn
- * @category  Rhapsody ForumBundle
- * @package   Rhapsody\ForumBundle\Repository\ODM\MongoDB
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Repository\ODM\MongoDB
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0

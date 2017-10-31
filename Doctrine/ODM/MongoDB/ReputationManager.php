@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -32,12 +32,12 @@ namespace Rhapsody\SocialBundle\Doctrine\ODM\MongoDB;
  * @author    Sean W. Quinn <sean.quinn@extesla.com>
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Doctrine\MongoDB
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
-class ReputationManager implements ReputationComplexInterface
+class ReputationManager
 {
 
 	public function __construct()

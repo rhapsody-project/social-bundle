@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,215 +27,306 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
+use Doctrine\Common\Util\ClassUtils;
+
 /**
- * Activities can represent different types of content, to simplify the
- * assignment of content to an activity (and the lookup of activities with
- * different types of content) all activities have a <tt>$content</tt> property
- * which can receive the content. This effectively makes the activity a wrapper
- * around different types of actionable content.
+ * An activity exposes content from a user or an actor within a system.
  *
- * @author    Sean.Quinn
+ * Activities are the quintessential collection of user generated content. They
+ * may (but are not required to) reference content.
+ *
+ * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
-class Activity implements ActivityInterface, ShareableInterface
+class Activity implements ActivityInterface, CommentableInterface, EndorsableInterface, ShareableInterface
 {
 
-	/**
-	 * The ID of this activity.
-	 * @var mixed
-	 */
-	protected $id;
+    /**
+     * The ID of this activity.
+     * @var mixed
+     */
+    protected $id;
 
-	/**
-	 * The user who posted this activity.
-	 * @var mixed
-	 * @access protected
-	 */
-	protected $author;
+    /**
+     * The comments associated with this Activity.
+     * @var array
+     */
+    protected $comments = array();
 
-	/**
-	 * A colleciton of <code>Rhapsody\SocialBundle\Model\CommentInterface</code>
-	 * objects.
-	 * @var array
-	 * @access protected
-	 */
-	protected $comments = array();
+    /**
+     * Optional. The content that this activity encapsulates. Examples of
+     * content are: blog posts, images, website links, videos, etc.
+     *
+     * A <code>null</code> value indicates that there is no content.
+     * @var \Rhapsody\SocialBundle\Model\ContentInterface
+     */
+    protected $content;
 
-	/**
-	 * The content that this activity encapsulates, may be a blog post, image,
-	 * website link, or any other type of content. May be <tt>null</tt>.
-	 * @var mixed
-	 * @access protected
-	 */
-	protected $content;
+    /**
+     * The date that this activity was created.
+     * @var \DateTime
+     */
+    protected $created;
 
-	/**
-	 * The date that this activity was posted.
-	 * @var \DateTime
-	 * @access protected
-	 */
-	protected $date;
+    /**
+     * The number of endorsements for this activity.
+     * @var int
+     */
+    protected $endorsementCount = 0;
 
-	/**
-	 * Colleciton of endorsements, e.g. likes, that this activity has received.
-	 * @var array
-	 * @access protected
-	 */
-	protected $endorsements = array();
+    /**
+     * The date that this activity was last modified.
+     * @var \DateTime
+     */
+    protected $lastModified;
 
-	/**
-	 * The source of this activity, e.g. user, group, or site-specific context.
-	 * @var mixed
-	 * @access protected
-	 */
-	protected $source;
+    /**
+     * The number of shares that this activity has.
+     * @var integer
+     */
+    protected $shareCount = 0;
 
-	/**
-	 * The text content of the activity.
-	 * @var string
-	 * @access protected
-	 */
-	protected $text;
+    /**
+     * The source of this activity, e.g. user, group, or site-specific context.
+     * @var mixed
+     */
+    protected $source;
 
-	/**
-	 * The type of the activity.
-	 * @var string
-	 * @access protected
-	 */
-	protected $type;
+    /**
+     * The text content of the activity.
+     * @var string
+     */
+    protected $text;
 
-	/**
-	 * The user who posted this activity.
-	 * @var mixed
-	 * @access protected
-	 */
-	protected $user;
+    /**
+     * The type of the activity.
+     * @var string
+     */
+    protected $type;
 
-	public function __construct()
-	{
-		$this->date = new \DateTime();
-	}
+    /**
+     * The user who posted this activity.
+     * @var mixed
+     */
+    protected $user;
 
-	public function __toString()
-	{
-		$class = get_class($this);
-		return $class . '@' . spl_object_hash($this);
-	}
+    public function __construct()
+    {
+        $this->created = new \DateTime();
+        $this->lastModified = new \DateTime();
 
-	public function getAuthor()
-	{
-		return $this->author;
-	}
+        $this->comments = array();
+    }
 
-	public function getComments()
-	{
-		return $this->comments;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentableInterface::addComment()
+     */
+    public function addComment(CommentInterface $comment)
+    {
+        $comment->setParent($this);
+        array_push($this->comments, $comment);
+        return $this;
+    }
 
-	public function getContent()
-	{
-		return $this->content;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\CommentableInterface::getComments()
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
 
-	public function getDate()
-	{
-		return $this->date;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getContent()
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 
-	public function getEndorsements()
-	{
-		return $this->endorsements;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getContentType()
+     */
+    public function getContentType()
+    {
+        if (null !== $this->content) {
+            return ClassUtils::getClass($this->content);
+        }
+        return null;
+    }
 
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getCreated()
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
 
-	public function getSource()
-	{
-		return $this->source;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getEndorsementCount()
+     */
+    public function getEndorsementCount()
+    {
+        return $this->endorsementCount;
+    }
 
-	public function getText()
-	{
-		return $this->text;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getId()
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function getType()
-	{
-		return $this->type;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getLastModified()
+     */
+    public function getLastModified()
+    {
+        return $this->lastModified;
+    }
 
-	/**
-	 *
-	 * @return mixed
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getShareCount()
+     */
+    public function getShareCount()
+    {
+        return $this->shareCount;
+    }
 
-	public function setAuthor($author)
-	{
-		$this->author = $author;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getSource()
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
 
-	public function setComments($comments)
-	{
-		$this->comments = $comments;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getSourceType()
+     */
+    public function getSourceType()
+    {
+        if (null !== $this->source) {
+            return ClassUtils::getClass($this->source);
+        }
+        return null;
+    }
 
-	/**
-	 *
-	 * @param mixed $content
-	 */
-	public function setContent($content)
-	{
-		$this->content = $content;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getText()
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
 
-	public function setDate($date)
-	{
-		$this->date = $date;
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\ActivityInterface::getType()
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	public function setEndorsements($endorsements)
-	{
-		$this->endorsements = $endorsements;
-	}
+    /**
+     *
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
+    /**
+     * Set the content of this activity.
+     *
+     * @param ContentInterface $content
+     */
+    public function setContent(ContentInterface $content)
+    {
+        $this->content = $content;
+    }
 
-	/**
-	 *
-	 * @param ActivitySourceInterface $source
-	 */
-	public function setSource($source)
-	{
-		$this->source = $source;
-	}
+    /**
+     * Set the created date of this activity.
+     *
+     * @param \DateTime $created
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+    }
 
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
+    /**
+     * Set the endorsement count of this activity.
+     *
+     * @param int $endorsementCount
+     */
+    public function setEndorsementCount($endorsementCount)
+    {
+        $this->endorsementCount = $endorsementCount;
+    }
 
-	public function setType($type)
-	{
-		$this->type;
-	}
+    /**
+     * Set the ID of this activity.
+     *
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
+    public function setLastModified(\DateTime $lastModified)
+    {
+        $this->lastModified = $lastModified;
+    }
+
+    public function setShareCount($shareCount)
+    {
+        $this->shareCount = $shareCount;
+    }
+
+    /**
+     * @param ActivitySourceInterface $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
 }

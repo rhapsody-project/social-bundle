@@ -13,5 +13,9 @@
 
 	<import resource="@RhapsodySocialBundle/Resources/config/routing/topics.xml"
 		prefix="/social" />
+		
+	<!-- Extension: /users -->
+	<import resource="@RhapsodySocialBundle/Resources/config/routing/user.xml"
+        prefix="/users" />
 
 </routes>

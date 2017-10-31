@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -36,7 +36,7 @@ use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Doctrine
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -44,7 +44,60 @@ use Rhapsody\SocialBundle\Form\Factory\FactoryInterface;
 interface PostManagerInterface
 {
 
+    /**
+     *
+     * @param TopicInterface $topic
+     */
+    function countPosts(TopicInterface $topic);
+
+    /**
+     *
+     * @param TopicInterface $topic
+     */
+    function countReplies(TopicInterface $topic);
+
 	function createPost(PostInterface $post, TopicInterface $topic, $user);
+
+	/**
+	 *
+	 * @param TopicInterface $topic
+	 */
+	function findAllByTopic(TopicInterface $topic);
+
+	/**
+	 *
+	 * @param TopicInterface $topic The topic to find recent posts in.
+	 * @param number $limit The number of posts to return.
+	 */
+	function findRecentByTopic(TopicInterface $topic, $limit = 10);
+
+	/**
+	 *
+	 * @param mixed $id The post's object ID.
+	 */
+	function findById($id);
+
+	/**
+	 *
+	 * @param string $slug The post's slug.
+	 */
+	function findBySlug($slug);
+
+	/**
+	 *
+	 * @param TopicInterface $topic
+	 * @param unknown $limit
+	 * @param number $offset
+	 */
+	function findByTopic(TopicInterface $topic, $limit = null, $offset = 0);
+
+	/**
+	 *
+	 * @param TopicInterface $topic
+	 * @param unknown $limit
+	 * @param number $offset
+	 */
+	function findRepliesByTopic(TopicInterface $topic, $limit = null, $offset = 0);
 
 	/**
 	 * Return the registered form factory.

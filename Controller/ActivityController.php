@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,8 +27,6 @@
  */
 namespace Rhapsody\SocialBundle\Controller;
 
-use FOS\RestBundle\View\View;
-use JMS\Serializer\SerializationContext;
 use Rhapsody\SocialBundle\Doctrine\ActivityManager;
 use Rhapsody\SocialBundle\Document\Activity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -36,155 +34,169 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
- * @author Sean.Quinn
- * @since 1.0
+ * @author    Sean.Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Controller
+ * @copyright Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
  */
 class ActivityController extends Controller
 {
 
-	/**
-	 * The feed index.
-	 * This renders the current user's feed and is an alias to
-	 * a user-specific feed.
-	 *
-	 * #url https://lorecall.com/activity
-	 * #url https://lorecall.com/activity?filter={filter}
-	 *
-	 * @param Request The Request.
-	 * @return Response the Response.
-	 */
-	public function indexAction(Request $request)
-	{
-		/** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
-		$delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
+    /**
+     * The current user's activity feed.
+     *
+     * This is a convenient URL for returning the same data as calls made to
+     * <code>/social/activity/{user}</code>.
+     *
+     * #url https://lorecall.com/activity
+     * #url https://lorecall.com/activity?filter={filter}
+     *
+     * @param Request The Request.
+     * @return Response the Response.
+     */
+    public function listAction(Request $request)
+    {
+        /** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
+        $delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
 
-		$user  = $this->getUser();
-		$date  = $request->query->get('date', new \DateTime);
-		$limit = $request->query->get('limit', 50);
-		$response = $delegate->listAction($request, $user, $date, $limit);
-		return $response->render();
-	}
+        $user  = $this->getUser();
+        $date  = $request->query->get('date', new \DateTime);
+        $limit = $request->query->get('limit', 50);
+        $response = $delegate->listActivityForUserAction($request, $user, $date, $limit);
+        return $response->render();
+    }
 
-	/**
-	 * Adds an activity to the database.
-	 * @param \Symfony\Component\HttpFoundation\Request $request
-	 */
-	public function addActivityAction(Request $request)
-	{
-		/** @var $postManager \Rhapsody\SocialBundle\Doctrine\ActivityManager */
-		$activityManager = $this->get('rhapsody_social.activity_manager');
+    /**
+     * Adds an activity to the database.
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function createAction(Request $request)
+    {
+        throw new \Exception('Not yet implemented');
+    }
 
-		$activity = new Activity();
-		$form = $this->createForm(new ActivityForm());
-		if ($request->isMethod('post')) {
-			$form->handleRequest($request);
-			if ($form->isValid()) {
-				$activity = $form->getData();
-				$activityManager->updateActivity($activity);
-			}
-		}
-	}
+    /**
+     * Adds an activity to the database.
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function commentAction(Request $request)
+    {
+        throw new \Exception('Not yet implemented');
+    }
 
-	/**
-	 * Adds an activity to the database.
-	 * @param \Symfony\Component\HttpFoundation\Request $request
-	 */
-	public function createAction(Request $request)
-	{
-	}
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function deleteAction(Request $request)
+    {
+        $activityManager = $this->getActivityManager();
 
-	/**
-	 * @param \Symfony\Component\HttpFoundation\Request $request
-	 */
-	public function deleteAction(Request $request)
-	{
-		$activityManager = $this->getActivityManager();
+        $activity = $request->get('activity');
+        $_activity = $activityManager->findOneBy(array('id' => $activity));
+        $activityManager->deleteActivity($_activity);
+    }
 
-		$activity = $request->get('activity');
-		$_activity = $activityManager->findOneBy(array('id' => $activity
-		));
-		$activityManager->deleteActivity($_activity);
-	}
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function feedAction(Request $request)
+    {
+        /** @var $request \Symfony\Component\HttpFoundation\Request */
+        $request = $this->getRequest();
+        $activityManager = $this->getActivityManager();
+    }
 
-	/**
-	 * @param \Symfony\Component\HttpFoundation\Request $request
-	 */
-	public function feedAction(Request $request)
-	{
-		/** @var $request \Symfony\Component\HttpFoundation\Request */
-		$request = $this->getRequest();
-		$activityManager = $this->getActivityManager();
-	}
+    /**
+     * Returns an activity, identified by the <code>activity</code> identifier
+     * in the URL.
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function getAction(Request $request)
+    {
+        /** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
+        $delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
 
-	/**
-	 * Render the response for a specific user's feed.
-	 *
-	 * #url /social/users/{user}/activity/list
-	 * #url /social/users/{user}/activity/list?filter={filter}
-	 *
-	 * @param Request The Request.
-	 * @return Response the Response.
-	 */
-	public function listAction(Request $request)
-	{
-		/** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
-		$delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
+        $response = $delegate->getAction($request, $request->get('activity'));
+        return $response->render();
+    }
 
-		/** @var $userManager \Lorecall\UserBundle\Doctrine\UserManagerInterface */
-		$userManager = $this->get('lorecall.user.doctrine.user_manager');
+    /**
+     * Render the response for a specific user's feed.
+     *
+     * #url /social/activity/{user}
+     * #url /social/activity/{user}?filter={filter}
+     *
+     * @param Request The Request.
+     * @return Response the Response.
+     */
+    public function userAction(Request $request)
+    {
+        /** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
+        $delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
 
-		$username = $request->query->get('username');
-		$date = $request->query->get('date', new \DateTime);
-		$limit = $request->query->get('limit', 50);
+        /** @var $userManager \Lorecall\UserBundle\Doctrine\UserManagerInterface */
+        $userManager = $this->get('lorecall.user.doctrine.user_manager');
 
-		$user = $userManager->findUserByUsername($username);
-		if (empty($user)) {
-			throw new \UnexpectedValueException('Unable to find user with username: '.$username);
-		}
+        $username = $request->query->get('username');
+        $date = $request->query->get('date', new \DateTime);
+        $limit = $request->query->get('limit', 50);
 
-		$response = $delegate->listAction($request, $user, $date, $limit);
-		return $response->render();
-	}
+        $user = $userManager->findUserByUsername($username);
+        if (empty($user)) {
+            throw new \UnexpectedValueException('Unable to find user with username: '.$username);
+        }
 
-	/**
-	 * Adds an activity to the database.
-	 * @param \Symfony\Component\HttpFoundation\Request $request
-	 */
-	public function newAction(Request $request)
-	{
-		/** @var $activityManager \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface */
-		$activityManager = $this->get('rhapsody.social.doctrine.activity_manager');
+        $response = $delegate->listActivityForUserAction($request, $user, $date, $limit);
+        return $response->render();
+    }
 
-		/** @var $formFactory \Rhapsody\SocialBundle\Form\Factory\FactoryInterface */
-		$formFactory = $this->get('rhapsody_social.activity.form.factory');
+    /**
+     * Adds an activity to the database.
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function newAction(Request $request)
+    {
+        /** @var $delegate \Rhapsody\SocialBundle\Controller\Delegate\ActivityDelegate */
+        $delegate = $this->get('rhapsody.social.controller.delegate.activity_delegate');
 
-		/** @var $user \Symfony\Component\Security\Core\User\UserInterface */
-		$user = $this->getUser();
+        /** @var $user \Symfony\Component\Security\Core\User\UserInterface */
+        $user = $this->getUser();
 
-		/** @var $category \Rhapsody\SocialBundle\Model\TopicInterface */
-		$activity = $activityManager->newActivity($user);
-		$form = $formFactory->createForm();
-		$form->setData($activity);
+        $response = $delegate->newAction($request, $user);
+        return $response->render();
+    }
 
-		$view = View::create(array('form' => $form->createView()
-		))->setFormat($request->getRequestFormat('html'))
-			->setSerializationContext(SerializationContext::create()->setGroups('context'))
-			->setTemplate('RhapsodySocialBundle:Activity:new.html.twig');
-		return $this->get('fos_rest.view_handler')
-			->handle($view);
-	}
+    /**
+     * @return \Rhapsody\SocialBundle\Doctrine\ActivityManager
+     */
+    protected function getActivityManager()
+    {
+        $activityManager = $this->get('rhapsody_social.activity_manager');
+        return $activityManager;
+    }
 
-	/**
-	 * @return \Rhapsody\SocialBundle\Doctrine\ActivityManager
-	 */
-	protected function getActivityManager()
-	{
-		$activityManager = $this->get('rhapsody_social.activity_manager');
-		return $activityManager;
-	}
+    /**
+     * Adds or updates an activity.
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function updateAction(Request $request)
+    {
+        /** @var $postManager \Rhapsody\SocialBundle\Doctrine\ActivityManager */
+        $activityManager = $this->get('rhapsody_social.activity_manager');
 
-	public function viewAction(Request $request)
-	{
-		$activityManager = $this->getActivityManager();
-	}
+        $activity = new Activity();
+        $form = $this->createForm(new ActivityForm());
+        if ($request->isMethod('post')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $activity = $form->getData();
+                $activityManager->updateActivity($activity);
+            }
+        }
+    }
 }

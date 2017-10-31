@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,20 +28,31 @@
 namespace Rhapsody\SocialBundle\Model;
 
 /**
+ * A contract that defines the shape of an achievement.
  *
- * @author    Sean W. Quinn <sean.quinn@extesla.com>
+ * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
-class Achievement implements AchievementInterface
+interface AchievementInterface
 {
 
-	public function __construct()
-	{
-		// Empty.
-	}
+    /**
+     * Return the object ID of this achievement.
+     *
+     * @return mixed the object ID of this achievement.
+     */
+    function getId();
+
+    /**
+     * Return the name of this achievement.
+     *
+     * @return string the name of this achievement.
+     */
+    function getName();
+
 }

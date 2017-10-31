@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,20 +28,76 @@
 namespace Rhapsody\SocialBundle\Model;
 
 /**
+ * An achievement is something that a user can earn through continual usage of
+ * a social system.
  *
- * @author    Sean W. Quinn <sean.quinn@extesla.com>
+ * <code>Achievements</code> represent the things that users can earn. An
+ * <code>EarnedAchievement</code> is the relationship between a user and an
+ * achievement.
+ *
+ * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
-class Achievement implements AchievementInterface
+abstract class Achievement implements AchievementInterface
 {
 
-	public function __construct()
-	{
-		// Empty.
-	}
+    /**
+     * This achievement's object ID.
+     * @var mixed
+     */
+    protected $id;
+
+    /**
+     * The name of the achievement.
+     * @var string
+     */
+    protected $name;
+
+    public function __construct()
+    {
+        // Empty.
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\AchievementInterface::getId()
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Model\AchievementInterface::getName()
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the achievement's ID.
+     *
+     * @param mixed $id the ID.
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * Set the achievement's name.
+     *
+     * @param string $name the achievement's name.
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 }

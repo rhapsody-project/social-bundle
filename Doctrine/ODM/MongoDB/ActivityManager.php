@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -40,166 +40,183 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Doctrine\ODM\MongoDB
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
 class ActivityManager implements ActivityManagerInterface
 {
-	/**
-	 * Whether or not to automatically flush changes after a persistence
-	 * operation is performed.
-	 * @var boolean
-	 * @access protected
-	 */
-	protected $autoFlush = true;
+    /**
+     * Whether or not to automatically flush changes after a persistence
+     * operation is performed.
+     * @var boolean
+     * @access protected
+     */
+    protected $autoFlush = true;
 
-	/**
-	 * The logging device.
-	 * @var \Monolog\Logger
-	 * @access protected
-	 */
-	protected $logger;
+    /**
+     * The logging device.
+     * @var \Monolog\Logger
+     * @access protected
+     */
+    protected $logger;
 
-	/**
-	 * The event dispatcher.
-	 * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-	 * @access protected
-	 */
-	protected $eventDispatcher;
+    /**
+     * The event dispatcher.
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     * @access protected
+     */
+    protected $eventDispatcher;
 
-	/**
-	 * The object manager.
-	 * @var \Doctrine\Common\Persistence\ObjectManager
-	 * @access protected
-	 */
-	protected $objectManager;
+    /**
+     * The object manager.
+     * @var \Doctrine\Common\Persistence\ObjectManager
+     * @access protected
+     */
+    protected $objectManager;
 
-	/**
-	 * The repository.
-	 * @var \Doctrine\ODM\MongoDB\DocumentRepository
-	 * @access protected
-	 */
-	protected $repository;
+    /**
+     * The repository.
+     * @var \Doctrine\ODM\MongoDB\DocumentRepository
+     * @access protected
+     */
+    protected $repository;
 
-	/**
-	 * The class builder factory.
-	 * @var \Rhapsody\SocialBundle\Factory\BuilderFactoryInterface
-	 * @access protected
-	 */
-	protected $builderFactory;
+    /**
+     * The class builder factory.
+     * @var \Rhapsody\SocialBundle\Factory\BuilderFactoryInterface
+     * @access protected
+     */
+    protected $builderFactory;
 
-	/**
-	 * The class.
-	 * @var string
-	 * @access protected
-	 */
-	protected $class;
+    /**
+     * The class.
+     * @var string
+     * @access protected
+     */
+    protected $class;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param EncoderFactoryInterface $encoderFactory
-	 * @param CanonicalizerInterface  $usernameCanonicalizer
-	 * @param CanonicalizerInterface  $emailCanonicalizer
-	 * @param ObjectManager           $om
-	 * @param string                  $class
-	 */
-	public function __construct(ObjectManager $objectManager, EventDispatcherInterface $eventDispatcher, BuilderFactoryInterface $builderFactory, $class)
-	{
-		$repository = $objectManager->getRepository($class);
-		$metadata = $objectManager->getClassMetadata($class);
+    /**
+     * Constructor.
+     *
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param CanonicalizerInterface  $usernameCanonicalizer
+     * @param CanonicalizerInterface  $emailCanonicalizer
+     * @param ObjectManager           $om
+     * @param string                  $class
+     */
+    public function __construct(ObjectManager $objectManager, EventDispatcherInterface $eventDispatcher, BuilderFactoryInterface $builderFactory, $class)
+    {
+        $repository = $objectManager->getRepository($class);
+        $metadata = $objectManager->getClassMetadata($class);
 
-		$this->class = $metadata->getName();
-		$this->repository = $repository;
-		$this->eventDispatcher = $eventDispatcher;
-		$this->objectManager = $objectManager;
-		$this->builderFactory = $builderFactory;
+        $this->class = $metadata->getName();
+        $this->repository = $repository;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->objectManager = $objectManager;
+        $this->builderFactory = $builderFactory;
 
-		$this->logger = new Logger(get_class($this));
-	}
+        $this->logger = new Logger(get_class($this));
+    }
 
-	/**
-	 * (non-PHPDoc)
-	 * @see Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::createActivityBuilder()
-	 */
-	public function createActivityBuilder()
-	{
-		return $this->builderFactory->createBuilder();
-	}
+    /**
+     * (non-PHPDoc)
+     * @see Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::createActivityBuilder()
+     */
+    public function createActivityBuilder()
+    {
+        return $this->builderFactory->createBuilder();
+    }
 
-	public function findActivityBy(array $criteria = array())
-	{
-		return $this->repository->findOneBy($criteria);
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::findActivityBy($criteria)
+     */
+    public function findActivityBy(array $criteria = array())
+    {
+        return $this->repository->findOneBy($criteria);
+    }
 
-	public function findAllActivityBy(array $criteria = array())
-	{
-		return $this->repository->findBy($criteria);
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::findActivityById()
+     */
+    public function findActivityById($activityId)
+    {
+        return $this->repository->findOneById($activityId);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * @see \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::findActivityBySource()
-	 */
-	public function findActivityBySource($sources = array(), $date = null, $limit = 50)
-	{
-		if (empty($date)) {
-			$date = new \DateTime;
-		}
-		return $this->repository->findAllBySource($sources, $date, $limit);
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::findAllActivityBy()
+     */
+    public function findAllActivityBy(array $criteria = array())
+    {
+        return $this->repository->findBy($criteria);
+    }
 
-	/**
-	 * Removes an activity from a user's activity feed. If an activity is
-	 * removed that references another object, e.g. a blog post, that post will
-	 * not be removed. In order to remove objects associated with an activity
-	 * the user must appropriately manage that content elsewhere.
-	 *
-	 * @param ActivityInterface $activity
-	 */
-	public function deleteActivity(ActivityInterface $activity)
-	{
-		$this->objectManager->remove($activity);
-		$this->objectManager->flush();
-	}
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Doctrine\ActivityManagerInterface::findActivityBySource()
+     */
+    public function findActivityBySource($sources = array(), $date = null, $limit = 50)
+    {
+        if (empty($date)) {
+            $date = new \DateTime;
+        }
+        return $this->repository->findAllBySource($sources, $date, $limit);
+    }
 
-	public function newActivity($args = array())
-	{
-		$builder = $this->createActivityBuilder();
+    /**
+     * Removes an activity from a user's activity feed. If an activity is
+     * removed that references another object, e.g. a blog post, that post will
+     * not be removed. In order to remove objects associated with an activity
+     * the user must appropriately manage that content elsewhere.
+     *
+     * @param ActivityInterface $activity
+     */
+    public function deleteActivity(ActivityInterface $activity)
+    {
+        $this->objectManager->remove($activity);
+        $this->objectManager->flush();
+    }
 
-		if (array_key_exists('author', $args) && $args['author'] !== null) {
-			$builder->setAuthor($args['author']);
-		}
+    public function newActivity($args = array())
+    {
+        $builder = $this->createActivityBuilder();
 
-		if (array_key_exists('date', $args) && $args['date'] !== null) {
-			$builder->setDate($args['date']);
-		}
+        if (array_key_exists('author', $args) && $args['author'] !== null) {
+            $builder->setAuthor($args['author']);
+        }
 
-		if (array_key_exists('content', $args) && $args['content'] !== null) {
-			$builder->setContent($args['content']);
-		}
+        if (array_key_exists('date', $args) && $args['date'] !== null) {
+            $builder->setDate($args['date']);
+        }
 
-		if (array_key_exists('source', $args) && $args['source'] !== null) {
-			$builder->setSource($args['source']);
-		}
+        if (array_key_exists('content', $args) && $args['content'] !== null) {
+            $builder->setContent($args['content']);
+        }
 
-		if (array_key_exists('text', $args) && $args['text'] !== null) {
-			$builder->setText($args['text']);
-		}
+        if (array_key_exists('source', $args) && $args['source'] !== null) {
+            $builder->setSource($args['source']);
+        }
 
-		if (array_key_exists('user', $args) && $args['user'] !== null) {
-			$builder->setUser($args['user']);
-		}
-		return $builder->build();
-	}
+        if (array_key_exists('text', $args) && $args['text'] !== null) {
+            $builder->setText($args['text']);
+        }
 
-	public function updateActivity(ActivityInterface $activity, $andFlush = true)
-	{
-		$this->objectManager->persist($activity);
-		if ($andFlush) {
-			$this->objectManager->flush();
-		}
-	}
+        if (array_key_exists('user', $args) && $args['user'] !== null) {
+            $builder->setUser($args['user']);
+        }
+        return $builder->build();
+    }
+
+    public function updateActivity(ActivityInterface $activity, $andFlush = true)
+    {
+        $this->objectManager->persist($activity);
+        if ($andFlush) {
+            $this->objectManager->flush();
+        }
+    }
 }

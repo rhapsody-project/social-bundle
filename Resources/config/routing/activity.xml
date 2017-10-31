@@ -1,26 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <routes xmlns="http://symfony.com/schema/routing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
-	<route id="rhapsody_social_activity" path="/activity/.{_format}">
-		<default key="_controller">RhapsodySocialBundle:Activity:index</default>
-		<default key="_format">html</default>
-	</route>
-	<route id="rhapsody_social_activity_comment" path="/activity/{activity}/comment.{_format}"
-		methods="POST">
-		<default key="_controller">RhapsodySocialBundle:Activity:create</default>
-		<default key="_format">html</default>
-	</route>
-	<route id="rhapsody_social_activity_create" path="/activity/create.{_format}"
-		methods="POST">
-		<default key="_controller">RhapsodySocialBundle:Activity:create</default>
-		<default key="_format">html</default>
-	</route>
-	<route id="rhapsody_social_activity_new" path="/activity/new.{_format}">
-		<default key="_controller">RhapsodySocialBundle:Activity:new</default>
-		<default key="_format">html</default>
-	</route>
-	<route id="rhapsody_social_user_activity_list" path="/users/{user}/activity/list.{_format}">
-		<default key="_controller">RhapsodySocialBundle:Activity:list</default>
-		<default key="_format">html</default>
-	</route>
+    xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <route id="rhapsodysocial_activity_list" path="/activity.{_format}" methods="GET,POST,PUT,DELETE">
+        <default key="_controller">RhapsodySocialBundle:Activity:list</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_create" path="/activity/create.{_format}" methods="POST">
+        <default key="_controller">RhapsodySocialBundle:Activity:create</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_new" path="/activity/new.{_format}">
+        <default key="_controller">RhapsodySocialBundle:Activity:new</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_record" path="/activity/{activity}.{_format}" methods="GET">
+        <default key="_controller">RhapsodySocialBundle:Activity:get</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_record_comment" path="/activity/{activity}/comment.{_format}" methods="POST">
+        <default key="_controller">RhapsodySocialBundle:Activity:comment</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_record_update" path="/activity/{activity}.{_format}" methods="PATCH,POST,PUT">
+        <default key="_controller">RhapsodySocialBundle:Activity:update</default>
+        <default key="_format">html</default>
+    </route>
+
+    <route id="rhapsodysocial_activity_user" path="/activity/{user}.{_format}" methods="GET">
+        <default key="_controller">RhapsodySocialBundle:Activity:user</default>
+        <default key="_format">html</default>
+    </route>
+    
 </routes>

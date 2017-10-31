@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,12 +27,14 @@
  */
 namespace Rhapsody\SocialBundle\Repository;
 
+use Rhapsody\SocialBundle\Model\CommentInterface;
+
 /**
  *
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Repository
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -40,4 +42,11 @@ namespace Rhapsody\SocialBundle\Repository;
 interface CommentRepositoryInterface
 {
 
+    /**
+     * Find and return a comment by its ID.
+     *
+     * @param mixed $id the ID of the comment.
+     * @return CommentInterface the comment, or <code>null</code>.
+     */
+    function findOneById($id);
 }

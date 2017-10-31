@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,9 +27,20 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
+/**
+ * An object that is aware of its endorsements.
+ *
+ * @author    Sean W. Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
+ */
 interface EndorsementAwareInterface
 {
 
-	function getEndorsements();
+   function getEndorsements();
 
 }

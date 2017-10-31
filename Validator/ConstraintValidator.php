@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -36,58 +36,58 @@ namespace Rhapsody\SocialBundle\Validator;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Validator
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
 class ConstraintValidator extends AbstractValidator
 {
+    private $constraints = array();
 
-  private $constraints = array();
-
-  public function __construct(array $constraints = null)
-  {
-    $this->constraints = $constraints;
-  }
-
-  public function addConstraint($constraint)
-  {
-    $this->constraints[] = $constraint;
-  }
-
-  /**
-   * Performs the actual validation.
-   *
-   * @param mixed $object the object to validate.
-   * @return boolean <tt>true</tt> if valid; otherwise <tt>false</tt>.
-   */
-  protected function doValidate($object)
-  {
-    try {
-      foreach ($this->constraints as $constraint) {
-        $constraint->evaluate($object);
-      }
-      return true;
+    public function __construct(array $constraints = null)
+    {
+        $this->constraints = $constraints;
     }
-    catch (\Exception $ex) {
-      //$this->log->warn()
-    }
-    return false;
-  }
 
-  /**
-   * Tests to see if the <tt>$object</tt> is supported by this validator. If it
-   * is, validation continues; if not, an exception is thrown indicating that
-   * an invalid argument was passed to the validator.
-   *
-   * @param mixed $object the object to test for support.
-   * @return boolean <tt>true</tt> if the <tt>$object</tt> is supported.
-   * @throws \InvalidArgumentException if the <tt>$object</tt> is not supported
-   *    by this validator.
-   */
-  protected function isSupported($object)
-  {
-    return true;
-  }
+    public function addConstraint($constraint)
+    {
+        $this->constraints[] = $constraint;
+    }
+
+    /**
+     * Performs the actual validation.
+     *
+     * @param mixed $object the object to validate.
+     * @return boolean <tt>true</tt> if valid; otherwise <tt>false</tt>.
+     */
+    protected function doValidate($object)
+    {
+        try {
+            foreach ($this->constraints as $constraint) {
+                $constraint->evaluate($object);
+            }
+            return true;
+        }
+        catch (\Exception $ex) {
+            // $this->log->warn()
+        }
+        return false;
+    }
+
+    /**
+     * Is the <code>$object</code> supported by this validator?
+     *
+     * If it is, validation continues; if not, an exception is thrown indicating
+     * that an invalid argument was passed to the validator.
+     *
+     * @param mixed $object the object to test for support.
+     * @return boolean <tt>true</tt> if the <tt>$object</tt> is supported.
+     * @throws \InvalidArgumentException if the <tt>$object</tt> is not
+     *    supported by this validator.
+     */
+    protected function isSupported($object)
+    {
+        return true;
+    }
 }

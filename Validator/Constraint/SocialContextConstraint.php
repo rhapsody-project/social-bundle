@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -35,7 +35,7 @@ use Rhapsody\SocialBundle\Model\SocialContextInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Validator\Constraint
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -43,23 +43,23 @@ use Rhapsody\SocialBundle\Model\SocialContextInterface;
 class SocialContextConstraint implements Constraint
 {
 
-  /**
-   * (non-PHPDoc)
-   * @see \Rhapsody\SocialBundle\Validator\Constraint::evaluate()
-   */
-  public function evaluate($object)
-  {
-    if (!$object instanceof SocialContextAwareInterface) {
-      throw new \InvalidArgumentException(sprintf('The object defined by: %s was not an instance of the SocialContextAwareInterface. Failing because: Unable to evaluate for the existence of a forum.', get_class($object)));
-    }
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Validator\Constraint\Constraint::evaluate()
+     */
+    public function evaluate($object)
+    {
+        if (!$object instanceof SocialContextAwareInterface) {
+            throw new \InvalidArgumentException(sprintf('The object defined by: %s was not an instance of the SocialContextAwareInterface. Failing because: Unable to evaluate for the existence of a forum.', get_class($object)));
+        }
 
-    $forum = $object->getSocialContext();
-    if ($forum === null) {
-      throw new \NullPointerException(sprintf('SocialContext property was NULL. SocialContext is required for %s.', get_class($object)));
-    }
+        $forum = $object->getSocialContext();
+        if ($forum === null) {
+            throw new \InvalidArgumentException(sprintf('SocialContext property was NULL. SocialContext is required for %s.', get_class($object)));
+        }
 
-    if (!$forum instanceof SocialContextInterface) {
-      throw new \Exception(sprintf('Invalid type assigned to forum property. Value assigned is type of: %s, expected: SocialContextInterface', get_class($forum)));
+        if (!$forum instanceof SocialContextInterface) {
+            throw new \Exception(sprintf('Invalid type assigned to forum property. Value assigned is type of: %s, expected: SocialContextInterface', get_class($forum)));
+        }
     }
-  }
 }

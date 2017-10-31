@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -32,7 +32,7 @@ namespace Rhapsody\SocialBundle\Model;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Model
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -42,14 +42,38 @@ interface SocialContextInterface
 
 	/**
 	 * Return the date that the social context was created.
+	 *
 	 * @return \DateTime the date when the social context was created.
 	 */
 	function getCreated();
 
 	/**
+	 * Return the object ID of the social context.
+	 *
+	 * @return mixed the object ID of the social context.
+	 */
+	function getId();
+
+	/**
 	 * Return the date when the social context was last indexed.
+	 *
 	 * @return \DateTime the date when the social context was last indexed.
 	 */
 	function getLastIndexed();
+
+	/**
+	 * Return the date when the social context was last modified.
+	 *
+	 * @return \DateTime the date when the social context was last modified.
+	 */
+	function getLastModified();
+
+	/**
+	 * Return whether or not the social context is enabled.
+	 *
+	 * @return boolean <code>true</code> if the social context is enabled;
+	 *     otherwise <code>false</code>.
+	 */
+	function isEnabled();
 
 }

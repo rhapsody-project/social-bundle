@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping
+    xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+
+    <mapped-superclass name="Rhapsody\SocialBundle\Model\Activity" collection="rhapsody_social_activity">
+
+        <field name="created" field="created" type="date" />
+        
+        <field name="lastModified" field="lastModified" type="date" />
+
+        <field name="text" field="text" type="bin" />
+
+        <field name="type" field="type" type="string" />
+
+        <field name="endorsementCount" field="endorsementCount" type="int" />
+        
+        <field name="shareCount" field="shareCount" type="int" />
+
+        <reference-one field="user" />
+
+        <reference-one field="content">
+            <cascade>
+                <merge />
+                <persist />
+                <refresh />
+            </cascade>
+        </reference-one>
+
+        <reference-one field="source">
+            <cascade>
+                <merge />
+                <persist />
+                <refresh />
+            </cascade>
+        </reference-one>
+
+    </mapped-superclass>
+
+</doctrine-mongo-mapping>

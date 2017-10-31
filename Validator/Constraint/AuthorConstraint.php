@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -35,31 +35,30 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Validator
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
  */
 class AuthorConstraint implements Constraint
 {
+    /**
+     * {@inheritDoc}
+     * @see \Rhapsody\SocialBundle\Validator\Constraint\Constraint::evaluate()
+     */
+    public function evaluate($object)
+    {
+        if (!$object instanceof AuthorAwareInterface) {
+            throw new \InvalidArgumentException(sprintf('The object defined by: %s was not an instance of the AuthorAwareInterface. Unable to evaluate for the existence of an author.', get_class($object)));
+        }
 
-  /**
-   * (non-PHPDoc)
-   * @see \Rhapsody\SocialBundle\Validator\Constraint::evaluate()
-   */
-  public function evaluate($object)
-  {
-    if (!$object instanceof AuthorAwareInterface) {
-      throw new \InvalidArgumentException(sprintf('The object defined by: %s was not an instance of the AuthorAwareInterface. Unable to evaluate for the existence of an author.', get_class($object)));
-    }
+        $author = $object->getAuthor();
+        if ($author === null) {
+            throw new \InvalidArgumentException(sprintf('Author property was NULL. Author is required for %s.', get_class($object)));
+        }
 
-    $author = $object->getAuthor();
-    if ($author === null) {
-      throw new \NullPointerException(sprintf('Author property was NULL. Author is required for %s.', get_class($object)));
+        if (!$author instanceof UserInterface) {
+            throw new \Exception(sprintf('Invalid type assigned to author property. Value assigned is type of: %s, expected: UserInterface', get_class($author)));
+        }
     }
-
-    if (!$author instanceof UserInterface) {
-      throw new \Exception(sprintf('Invalid type assigned to author property. Value assigned is type of: %s, expected: UserInterface', get_class($author)));
-    }
-  }
 }

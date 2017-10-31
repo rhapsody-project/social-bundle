@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -28,15 +28,17 @@
 namespace Rhapsody\SocialBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  *
  * @author    Sean W. Quinn
- * @category  Rhapsody ForumBundle
- * @package   Rhapsody\ForumBundle\Form\Type
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Form\Type
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -60,8 +62,7 @@ class TopicType extends AbstractType
 	public function buildForm(FormBuilderInterface $builder, array $options)
 	{
 		parent::buildForm($builder, $options);
-		$builder->add('title', 'text');
-		//$builder->add('category');
+		$builder->add('title', TextType::class);
 		$builder->add('post', $options['post_form'], array(
 			'data_class' => $options['post_class'],
 			'label'  => false,
@@ -74,14 +75,22 @@ class TopicType extends AbstractType
 		return 'rhapsody_forum_form_type_topic';
 	}
 
+	// BC for Symfony Framework < 2.7
 	public function setDefaultOptions(OptionsResolverInterface $resolver)
+	{
+		$this->configureOptions($resolver);
+	}
+
+	public function configureOptions(OptionsResolver $resolver)
 	{
 		$resolver->setDefaults(array(
 			'csrf_protection'   => true,
+			'csrf_token_id'     => 'topic',
 			'data_class'        => $this->class,
-			'intention'         => 'post',
 			'post_form'         => null,
 			'post_class'        => null,
+			// BC for Symfony Framework < 2.8
+			'intention'         => 'topic',
 		));
 	}
 }

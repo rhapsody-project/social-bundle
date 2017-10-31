@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -36,7 +36,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author    Sean W. Quinn
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Doctrine
- * @copyright Copyright (c) 2013 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0
@@ -44,38 +44,40 @@ use Symfony\Component\Security\Core\User\UserInterface;
 interface ActivityManagerInterface
 {
 
-	function findActivityBy(array $criteria = array());
+    function findActivityBy(array $criteria = array());
 
-	/**
-	 * Return the activity for the given <code>$sources</code>. If a non-null
-	 * date, <code>$date</code>, is supplied then all activity on that date and
-	 * older will be returned up until the <code>$limit</code> (default: 50).
-	 *
-	 * @param array $sources the sources to return activity for.
-	 * @param int $limit the maximum number of acitivities to return.
-	 * @param \DateTime $date the date.
-	 * @return array the collection of activity for the user.
-	 */
-	function findActivityBySource($sources = array(), $date = null, $limit = 50);
+    function findActivityById($activityId);
 
-	function findAllActivityBy(array $criteria = array());
+    /**
+     * Return the activity for the given <code>$sources</code>. If a non-null
+     * date, <code>$date</code>, is supplied then all activity on that date and
+     * older will be returned up until the <code>$limit</code> (default: 50).
+     *
+     * @param array $sources the sources to return activity for.
+     * @param int $limit the maximum number of acitivities to return.
+     * @param \DateTime $date the date.
+     * @return array the collection of activity for the user.
+     */
+    function findActivityBySource($sources = array(), $date = null, $limit = 50);
 
-	/**
-	 * Removes an activity from a user's activity feed. If an activity is
-	 * removed that references another object, e.g. a blog post, that post will
-	 * not be removed. In order to remove objects associated with an activity
-	 * the user must appropriately manage that content elsewhere.
-	 *
-	 * @param ActivityInterface $activity
-	 */
-	function deleteActivity(ActivityInterface $activity);
+    function findAllActivityBy(array $criteria = array());
 
-	/**
-	 *
-	 * @param array $args arguments to build the new activity from.
-	 * @param UserInterface $user
-	 */
-	function newActivity($args = array());
+    /**
+     * Removes an activity from a user's activity feed. If an activity is
+     * removed that references another object, e.g. a blog post, that post will
+     * not be removed. In order to remove objects associated with an activity
+     * the user must appropriately manage that content elsewhere.
+     *
+     * @param ActivityInterface $activity
+     */
+    function deleteActivity(ActivityInterface $activity);
 
-	function updateActivity(ActivityInterface $activity, $andFlush = true);
+    /**
+     *
+     * @param array $args arguments to build the new activity from.
+     * @param UserInterface $user
+     */
+    function newActivity($args = array());
+
+    function updateActivity(ActivityInterface $activity, $andFlush = true);
 }

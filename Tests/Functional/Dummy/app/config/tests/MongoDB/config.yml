@@ -1,0 +1,25 @@
+imports:
+    - { resource: ./../../default.yml }
+
+parameters:
+    rhapsody_social.tests.mongodb.server: "mongodb://localhost:27017"
+    rhapsody_social.tests.mongodb.db: "rhapsody_socialbundle_tests"
+
+doctrine_mongodb:
+    connections:
+      default:
+        server:         "%rhapsody_social.tests.mongodb.server%"
+    default_database:   "%rhapsody_social.tests.mongodb.db%"
+    document_managers:
+      default:
+        auto_mapping:   true
+
+rhapsody_social:
+    db_driver: mongodb
+    mail:
+        sender_email: noreply@rhapsody-project
+        sender_name:  Rhapsody Project
+    activity:
+        activity_class: Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Document\Activity
+    profile:
+        profile_class:  Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Document\Profile

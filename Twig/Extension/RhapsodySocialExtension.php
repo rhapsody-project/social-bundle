@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2013 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -39,7 +39,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @category  Rhapsody SocialBundle
  * @package   Rhapsody\SocialBundle\Twig\Extension
- * @copyright Copyright (c) 2015 Rhapsody Project
+ * @copyright Copyright (c) Rhapsody Project
  * @license   http://opensource.org/licenses/MIT
  * @version   $Id$
  * @since     1.0

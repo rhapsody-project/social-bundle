@@ -1,0 +1,25 @@
+imports:
+    - { resource: ./../../default.yml }
+    
+parameters:
+    rhapsody_social.tests.orm.db: "rhapsody_socialbundle_tests"
+
+doctrine:
+    dbal:
+        connections:
+          default:
+            dbname:   "%rhapsody_social.tests.orm.db%"
+            memory:   true
+            driver:   pdo_sqlite
+    orm:
+        auto_mapping:   true
+        
+rhapsody_social:
+    db_driver: orm
+    mail:
+        sender_email: noreply@rhapsody-project
+        sender_name:  Rhapsody Project
+    activity:
+        activity_class: Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Entity\Activity
+    profile:
+        profile_class:  Rhapsody\SocialBundle\Tests\Functional\Dummy\Bundle\TestBundle\Entity\Profile

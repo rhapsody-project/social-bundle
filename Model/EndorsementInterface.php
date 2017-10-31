@@ -1,5 +1,5 @@
 <?php
-/* Copyright (c) 2015 Rhapsody Project
+/* Copyright (c) Rhapsody Project
  *
  * Licensed under the MIT License (http://opensource.org/licenses/MIT)
  *
@@ -27,11 +27,52 @@
  */
 namespace Rhapsody\SocialBundle\Model;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
+/**
+ * Marks an object as one that can be endorsed.
+ *
+ * If an object implements the <code>EndorsableInterface</code> it means that
+ * the object can be endorsed. If endorsed, a new <code>Endorsement</code>
+ * record should be created that reflects what was endorsed, when, and by whom.
+ *
+ * @author    Sean W. Quinn
+ * @category  Rhapsody SocialBundle
+ * @package   Rhapsody\SocialBundle\Model
+ * @copyright Rhapsody Project
+ * @license   http://opensource.org/licenses/MIT
+ * @version   $Id$
+ * @since     1.0
+ */
 interface EndorsementInterface
 {
 
-	function getDate();
+    /**
+     * Return the date of the endorsement.
+     *
+     * @return \DateTime the date of the endorsement.
+     */
+    function getDate();
 
-	function getUser();
+    /**
+     * Return the object being endorsed.
+     *
+     * @return EndorsableInterface the object being endorsed.
+     */
+    function getEndorsed();
+
+    /**
+     * Return the endorsement's ID.
+     *
+     * @return mixed the endorsement's ID.
+     */
+    function getId();
+
+    /**
+     * Return the user responsible for the endorsement.
+     *
+     * @return UserInterface the user responsible for the endorsement.
+     */
+    function getUser();
 
 }
